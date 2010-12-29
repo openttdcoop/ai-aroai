@@ -21,118 +21,149 @@
 
 
 class Manager
-	{
-		event = null;
-	}
+{
+	LOAN_REDUCE_TO = 0;			///< Amount of money to reduce loan to
+	MONEY_BEFORE_LOAN_REDUCE = 750000;	///< Amount of money to have before reducing loan
+}
 
 function Manager::ManageLoan()
-	{
-		//TODO:something else :)
-		//...or maybe not...it's all i ever do with my loan
-		if(AICompany.GetLoanAmount() == 0)
-			return;
-		Info("Managing loan");
-		if(AICompany.GetBankBalance(AICompany.COMPANY_SELF) >= 750000)
-		{
-			Info("The company now has more than £750000. Reducing Loan to minimum");
-			AICompany.SetLoanAmount(0);
-				return;
-		}
-		AICompany.SetLoanAmount(AICompany.GetMaxLoanAmount()); //Why not?
+{
+	/* TODO: Something else...
+	 * ...or maybe not; it's all I ever do with my loan */
+	if (AICompany.GetLoanAmount() == LOAN_REDUCE_TO) return; //Loan already been reduced to 0
+	Info("Managing loan");
+	if (AICompany.GetBankBalance(AICompany.COMPANY_SELF) >= MONEY_BEFORE_LOAN_REDUCE) {
+		Info("The company now has more than £" + MONEY_BEFORE_LOAN_REDUCE + ". Reducing Loan to minimum");
+		AICompany.SetLoanAmount(LOAN_REDUCE_TO);
+		return;
 	}
+	AICompany.SetLoanAmount(AICompany.GetMaxLoanAmount()); //Why not?
+}
 
 function Manager::ManageEvents()
-	{
-		if(AIEventController.IsEventWaiting())
-		{
-			Info("Managing events");
-		}
-		while (AIEventController.IsEventWaiting())
-		{
-			event = AIEventController.GetNextEvent();
-			switch (event.GetEventType())
-			{
-				case AIEvent.AI_ET_COMPANY_ASK_MERGER:
-					//TODO: deal with it depending on amount of money
+{
+	local dealtWithEvent = null;
+	if (AIEventController.IsEventWaiting()) {
+		Info("Managing events");
+	}
+	while (AIEventController.IsEventWaiting()) {
+		dealtWithEvent = true;
+		local event = AIEventController.GetNextEvent();
+		switch (event.GetEventType()) {
+			case AIEvent.AI_ET_COMPANY_BANKRUPT:
+				local companyname = AICompany.GetName(AIEventCompanyBankrupt.Convert(event).GetCompanyID());
+				/* Can't always get company name because it's already gone */
+				if (!companyname) AILog.Info(Util.GameDate() + " [Manager] A company has gone bankrupt. FAILED!!");
+				else AILog.Info(Util.GameDate() + " [Manager] " + companyname + " has gone bankrupt. FAILED!!");
 				break;
-				case AIEvent.AI_ET_COMPANY_BANKRUPT:
-					local companyid = AIEventCompanyBankrupt.Convert(event).GetCompanyID();
-					local companyname = AICompany.GetName(companyid);
-					/*can't get company name because it already gone*/
-					AILog.Info(Util.GameDate() + " [Manager] A company has gone bankrupt. FAILED!!"); 
+			case AIEvent.AI_ET_COMPANY_IN_TROUBLE:
+				local companyname = AICompany.GetName(AIEventCompanyInTrouble.Convert(event).GetCompanyID());
+				Info(companyname + " is in trouble and may go bankrupt soon. HA");
 				break;
-				case AIEvent.AI_ET_COMPANY_IN_TROUBLE:
-					local companyid = AIEventCompanyInTrouble.Convert(event).GetCompanyID();
-					local companyname = AICompany.GetName(companyid);
-					Info(companyname + " is in trouble and may go bankrupt soon");
+			case AIEvent.AI_ET_COMPANY_MERGER:
+				local oldcompanyname = AICompany.GetName(AIEventCompanyMerger.Convert(event).GetOldCompanyID());
+				local newcompanyname = AICompany.GetName(AIEventCompanyMerger.Convert(event).GetNewCompanyID());
+				Info(oldcompanyname + " has been bought by " + newcompanyname);
 				break;
-				case AIEvent.AI_ET_COMPANY_MERGER:
-					local oldcompanyid = AIEventCompanyMerger.Convert(event).GetOldCompanyID();
-					local oldcompanyname = AICompany.GetName(oldcompanyid);
-					local newcompanyid = AIEventCompanyMerger.Convert(event).GetNewCompanyID();
-					local newcompanyname = AICompany.GetName(newcompanyid);
-					if(newcompanyname)
-					{
-						Info(oldcompanyname + " has been bought by " + newcompanyname);
-					}
+			case AIEvent.AI_ET_COMPANY_NEW:
+				local companyname = AICompany.GetName(AIEventCompanyNew.Convert(event).GetCompanyID());
+				Info(companyname + " has just started");
 				break;
-				case AIEvent.AI_ET_COMPANY_NEW:
-					local companyid = AIEventCompanyNew.Convert(event).GetCompanyID();
-					local companyname = AICompany.GetName(companyid);
-					Info("Welcome to " + companyname + ", which has just started");
+			case AIEvent.AI_ET_ENGINE_AVAILABLE:
+				local eng = AIEventEngineAvailable.Convert(event).GetEngineID();
+				local engname = AIEngine.GetName(eng);
+				Info("New engine available: " + engname);
 				break;
-				case AIEvent.AI_ET_ENGINE_AVAILABLE:
-					local eng = AIEventEngineAvailable.Convert(event).GetEngineID();
-					local engname = AIEngine.GetName(eng);
-					Info("New engine available: " + engname);
+			case AIEvent.AI_ET_ENGINE_PREVIEW:
+				AIEventEnginePreview.Convert(event).AcceptPreview();
+				Info("Accepted a preview of " + AIEventEnginePreview.Convert(event).GetName());
 				break;
-				case AIEvent.AI_ET_ENGINE_PREVIEW:
-					AIEventEnginePreview.Convert(event).AcceptPreview();
-					Info("Accepted a preview of " + AIEventEnginePreview.Convert(event).GetName());
+			case AIEvent.AI_ET_VEHICLE_CRASHED:
+				local veh = AIEventVehicleCrashed.Convert(event).GetVehicleID();
+				local vehname = AIVehicle.GetName(veh);
+				Warning(vehname + " has crashed");
+				Warning("Event is unhandled");
 				break;
-				case AIEvent.AI_ET_VEHICLE_CRASHED:
-					local veh = AIEventVehicleCrashed.Convert(event).GetVehicleID();
-					local vehname = AIVehicle.GetName(veh);
-					Warning(vehname + " has crashed");
-					//TODO: deal with it
+			case AIEvent.AI_ET_VEHICLE_LOST:
+				local veh = AIEventVehicleLost.Convert(event).GetVehicleID();
+				local vehname = AIVehicle.GetName(veh);
+				Info(vehname + " is lost");
+				Warning("Event is unhandled");
 				break;
-				case AIEvent.AI_ET_VEHICLE_LOST:
-					local veh = AIEventVehicleLost.Convert(event).GetVehicleID();
-					local vehname = AIVehicle.GetName(veh);
-					Info(vehname + " is lost");
+			/* Silent ignore these
+			 * STATION_FIRST_VEHICLE will almost certainly never be handled
+			 * May deal with the others at some point */
+			case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:
+			case AIEvent.AI_ET_STATION_FIRST_VEHICLE:
+			case AIEvent.AI_ET_INDUSTRY_OPEN:
+			case AIEvent.AI_ET_INDUSTRY_CLOSE:
+			case AIEvent.AI_ET_SUBSIDY_OFFER:
+			case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:
+			case AIEvent.AI_ET_SUBSIDY_AWARDED:
+			case AIEvent.AI_ET_SUBSIDY_EXPIRED:
+			case AIEvent.AI_ET_DISASTER_ZEPPELINER_CRASHED:
+			case AIEvent.AI_ET_DISASTER_ZEPPELINER_CLEARED:
 				break;
-				case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:
-					//TODO: deal with it
+			/* These are unhandled (and will be handled in future) */
+			case AIEvent.AI_ET_COMPANY_ASK_MERGER: //TODO: Deal with it depending on amount of money
+			default:
+				Warning("Event is unhandled");
 				break;
-				default:
-					//silent ignore the rest for now
-				break;
-			}
-		}
-		if(event)
-		{
-		Info("No more events to manage");
 		}
 	}
+	if (dealtWithEvent) {
+		Info("No more events to manage");
+	}
+}
+
+function Manager::GetEventName(event) //OUT OF USE FOR NOW
+{//TODO: Switch round the debug: display when event is unhandled
+	/* No function to get the name of events, so: 
+	 * False return cases are silent ignores*/
+	switch (event) {
+		case AIEvent.AI_ET_INVALID:			return "AI_ET_INVALID";
+		case AIEvent.AI_ET_TEST:			return "AI_ET_TEST";
+		case AIEvent.AI_ET_SUBSIDY_OFFER:		return false;
+		case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:	return false;
+		case AIEvent.AI_ET_SUBSIDY_AWARDED:		return false;
+		case AIEvent.AI_ET_SUBSIDY_EXPIRED:		return false;
+		case AIEvent.AI_ET_ENGINE_PREVIEW:		return "AIEventEnginePreview";
+		case AIEvent.AI_ET_COMPANY_NEW:			return "AIEventCompanyNew";
+		case AIEvent.AI_ET_COMPANY_IN_TROUBLE:		return "AIEventCompanyInTrouble";
+		case AIEvent.AI_ET_COMPANY_ASK_MERGER:		return "AIEventCompanyAskMerger";
+		case AIEvent.AI_ET_COMPANY_MERGER:		return "AIEventCompanyMerger";
+		case AIEvent.AI_ET_COMPANY_BANKRUPT:		return "AIEventCompanyBankrupt";
+		case AIEvent.AI_ET_VEHICLE_CRASHED:		return "AIEventVehicleCrashed";
+		case AIEvent.AI_ET_VEHICLE_LOST:		return "AIEventVehicleLost";
+		case AIEvent.AI_ET_VEHICLE_WAITING_IN_DEPOT:	return "AIEventVehicleWaitingInDepot";
+		case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:	return false;
+		case AIEvent.AI_ET_INDUSTRY_OPEN:		return false;
+		case AIEvent.AI_ET_INDUSTRY_CLOSE:		return false;
+		case AIEvent.AI_ET_ENGINE_AVAILABLE:		return "AIEventEngineAvailable";
+		case AIEvent.AI_ET_STATION_FIRST_VEHICLE:	return false;
+		case AIEvent.AI_ET_DISASTER_ZEPPELINER_CRASHED: return false;
+		case AIEvent.AI_ET_DISASTER_ZEPPELINER_CLEARED: return false;
+		default:					return "Unknown event name";
+	}
+}
 
 function Manager::Info(string)
-	{
-		AILog.Info(Util.GameDate() + " [Manager] " + string + ".");
-	}
-
+{
+	AILog.Info(Util.GameDate() + " [Manager] " + string + ".");
+}
 
 function Manager::Warning(string)
-	{
-		AILog.Warning(Util.GameDate() + " [Manager] " + string + ".");
-	}
+{
+	AILog.Warning(Util.GameDate() + " [Manager] " + string + ".");
+}
 
 function Manager::Error(string)
-	{
-		AILog.Error(Util.GameDate() + " [Manager] " + string + ".");
-	}
+{
+	AILog.Error(Util.GameDate() + " [Manager] " + string + ".");
+}
 
 function Manager::Debug(string)
-	{
-		AILog.Warning(Util.GameDate() + " [Manager] DEBUG: " + string + ".");
-		AILog.Warning(Util.GameDate() + " [Manager] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
-	}
+{
+	AILog.Warning(Util.GameDate() + " [Manager] DEBUG: " + string + ".");
+	AILog.Warning(Util.GameDate() + " [Manager] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
+}

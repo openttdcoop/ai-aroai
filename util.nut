@@ -1,5 +1,4 @@
 /*
- * debugs.nut
  * This file is part of AroAI
  *
  * Copyright (C) 2010 - Charles Pigott (Lord Aro)
@@ -22,45 +21,41 @@
 
 
 class Util
-	{
-	}
+{
+	DATE_2_DIGITS = 10;	///< Make sure the date always has 2 digits
+}
 
 function Util::GameDate()
-	{
-		local date = AIDate.GetCurrentDate();
-		local year = AIDate.GetYear(date);
-		local month = AIDate.GetMonth(date);
-		if(month < 10)
-		{
-			month = "0" + month;
-		}
-		local day = AIDate.GetDayOfMonth(date);
-		if(day < 10)
-		{
-			day = "0" + day;
-		}
-		return day + "/" + month + "/" + year;
+{
+	local date = AIDate.GetCurrentDate();
+	local year = AIDate.GetYear(date);
+	local month = AIDate.GetMonth(date);
+	if(month < DATE_2_DIGITS) {
+		month = "0" + month;
 	}
+	local day = AIDate.GetDayOfMonth(date);
+	if(day < DATE_2_DIGITS) {
+		day = "0" + day;
+	}
+	return day + "/" + month + "/" + year;
+}
 
-function Util::Sqrt(i) //from Rondje
-	{
-		if (i == 0)
-			return 0;   // Avoid divide by zero
-		local n = (i / 2) + 1;       // Initial estimate, never low
-		local n1 = (n + (i / n)) / 2;
-		while (n1 < n)
-		{
-			n = n1;
-			n1 = (n + (i / n)) / 2;
-		}
-			return n;
+function Util::Sqrt(i) //From Rondje
+{
+	if (i == 0) return 0; //Avoid divide by zero	
+	local n = (i / 2) + 1; //Initial estimate, never low
+	local n1 = (n + (i / n)) / 2;
+	while (n1 < n) {
+		n = n1;
+		n1 = (n + (i / n)) / 2;
 	}
+	return n;
+}
 
 function Util::ClearAllSigns()
-	{
-		local sign_list = AISignList();
-		for(local i = sign_list.Begin(); !sign_list.IsEnd(); i = sign_list.Next())
-		{
-			AISign.RemoveSign(i);
-		}
+{
+	local sign_list = AISignList();
+	for(local i = sign_list.Begin(); !sign_list.IsEnd(); i = sign_list.Next()) {
+		AISign.RemoveSign(i);
 	}
+}

@@ -1,5 +1,4 @@
 /*
- * vehiclemanager.nut
  * This file is part of AroAI
  *
  * Copyright (C) 2010 - Charles Pigott (Lord Aro)
@@ -21,160 +20,145 @@
  */
 
 class VehicleManager
-	{
-		function BuildBusEngines(depot_tile, town_start, town_end);
-		function SelectVehicles(cargo_id);
-		function DealWithBuildVehicleErrors(err);
-		
-		engine = -1;
-	}
+{	
+	NUM_VEHICLES_PER_ROUTE = 5;	///< Number of vehicles to build per route
+	
+	engine = -1;
+}
 
 function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
-	{
-		Info("Using a " + AIEngine.GetName(VehicleManager.SelectVehicles(AICargo.CC_PASSENGERS)) + " to carry passengers");
-//		Debug("depot_tile = " + depot_tile);
-//		Debug("engine = " + engine);
+{
+	Info("Using a " + AIEngine.GetName(VehicleManager.SelectVehicles()) + " to carry passengers");
 
-		local town_start_id = AITile.GetClosestTown(town_start);
-		Info("Buying buses in " + AITown.GetName(town_start_id));
+	local town_start_id = AITile.GetClosestTown(town_start);
+	Info("Buying buses in " + AITown.GetName(town_start_id));
 
-		local vehicle_id = AIVehicle.BuildVehicle(depot_tile, engine);
-		if(AIVehicle.IsValidVehicle(vehicle_id) == false)
-		{
-			local dwbve = VehicleManager.DealWithBuildVehicleErrors(AIError.GetLastError());
-			if(dwbve == null)
-				return null;
-			if(dwbve == 3)
-			{
-				while(AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIEngine.GetPrice(engine))
-				{
-					AIController.Sleep(50);
-				}
-				vehicle_id = AIVehicle.BuildVehicle(depot_tile, engine);
+	local vehicle_id = AIVehicle.BuildVehicle(depot_tile, engine);
+	if(!AIVehicle.IsValidVehicle(vehicle_id)) {
+		local dwbve = VehicleManager.DealWithBuildVehicleErrors(AIError.GetLastError());
+		if(dwbve == 3) {
+			while(AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIEngine.GetPrice(engine)) {
+				AIController.Sleep(Builder_BusRoute.SLEEP_TIME_MONEY);
 			}
-		}
-		Info("1/5 buses built");
-		AIOrder.AppendOrder(vehicle_id, town_start, AIOrder.AIOF_NON_STOP_INTERMEDIATE);
-		AIOrder.AppendOrder(vehicle_id, town_end, AIOrder.AIOF_NON_STOP_INTERMEDIATE);
-		AIOrder.AppendOrder(vehicle_id, depot_tile, AIOrder.AIOF_SERVICE_IF_NEEDED);
-		if(AIOrder.GetOrderCount(vehicle_id) < 3)
-		{
-			//Debug("orders failed because " + AIError.GetLastErrorString());
-			Error("Ordering vehicles failed");
+			vehicle_id = AIVehicle.BuildVehicle(depot_tile, engine);
+		} else {
+			Error("Buying vehicles failed");
 			return null;
 		}
-		AIVehicle.StartStopVehicle(vehicle_id);
-		local c = 2;
-		while (c <= 5)
-		{
-			local builtVehicle_id = vehicle_id;
-			vehicle_id = AIVehicle.CloneVehicle(depot_tile, builtVehicle_id, true);
-			if(AIVehicle.IsValidVehicle(vehicle_id) == false)
-			{
-				local dwbve = VehicleManager.DealWithBuildVehicleErrors(AIError.GetLastError());
-				if(dwbve == null)
-					return null;
-				if(dwbve == 3)
-				{
-					while(AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIEngine.GetPrice(engine))
-					{
-						AIController.Sleep(50);
+	}
+	Info("1/" + NUM_VEHICLES_PER_ROUTE + " buses built");
+	/* Give vehicle its orders */
+	AIOrder.AppendOrder(vehicle_id, town_start, AIOrder.AIOF_NON_STOP_INTERMEDIATE);
+	AIOrder.AppendOrder(vehicle_id, town_end, AIOrder.AIOF_NON_STOP_INTERMEDIATE);
+	AIOrder.AppendOrder(vehicle_id, depot_tile, AIOrder.AIOF_SERVICE_IF_NEEDED);
+	/* If orders are not complete for some reason, give up */
+	if(AIOrder.GetOrderCount(vehicle_id) < 3) {
+		Error("Ordering vehicles failed");
+		/* TODO: Get rid of failed vehicle */
+		return null;
+	}
+	AIVehicle.StartStopVehicle(vehicle_id); //Start vehicle
+	local c = 2;
+	while (c <= NUM_VEHICLES_PER_ROUTE) {
+		local builtVehicle_id = vehicle_id;
+		vehicle_id = AIVehicle.CloneVehicle(depot_tile, builtVehicle_id, true);
+		if(!AIVehicle.IsValidVehicle(vehicle_id)) {
+			local dwbve = VehicleManager.DealWithBuildVehicleErrors(AIError.GetLastError());
+				if(dwbve == null) return null;
+				if(dwbve == 3) {
+					while(AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIEngine.GetPrice(engine)) {
+						AIController.Sleep(Builder_BusRoute.SLEEP_TIME_MONEY);
 					}
 					vehicle_id = AIVehicle.CloneVehicle(depot_tile, builtVehicle_id, true);
 				}
-			/*	if(dwbve == 5)
-				{					//keep this for now
-				Debug("c = " + c);
+/*				if(dwbve == 5) {
+				Debug("c = " + c);		//Keep this for now
 				Debug("engine = " + engine);
 				Debug("depot_tile = " + depot_tile);
 				Debug("vehicle_id = " + vehicle_id);
-				//Debug("old_vehicle_id = " + old_vehicle_id);
+				Debug("old_vehicle_id = " + old_vehicle_id);
 				}*/
-			}
-			AIVehicle.StartStopVehicle(vehicle_id);
-			Info(c + "/5  buses built");
-			c++; //lol :)
 		}
-		Info("Buses successfully bought");
-			return true;
+		AIVehicle.StartStopVehicle(vehicle_id); //Start cloned vehicle
+		Info(c + "/" + NUM_VEHICLES_PER_ROUTE + " buses built");
+		c++; //Funny!
 	}
+	Info("Buses successfully bought");
+	/* TODO: Test return value without the return */
+	return true;
+}
 	
-function VehicleManager::SelectVehicles(cargo_id)
-	{
-		local list = AICargoList();
-		local passenger_cargo_id = -1;
-		for (local i = list.Begin(); !list.IsEnd(); i = list.Next())
-		{
-			if (AICargo.HasCargoClass(i, AICargo.CC_PASSENGERS))
-			{
-				passenger_cargo_id = i;
-				break;
-			}
+function VehicleManager::SelectVehicles()
+{ //TODO: Better vehicle selector
+	/* Get passenger cargo ID */
+	local list = AICargoList();
+	local passenger_cargo_id = null;
+	for (local i = list.Begin(); !list.IsEnd(); i = list.Next()) {
+		if (AICargo.HasCargoClass(i, AICargo.CC_PASSENGERS) &&
+		    AICargo.GetTownEffect(i) == AICargo.TE_PASSENGERS) {
+			passenger_cargo_id = i;
+			break;
 		}
-		local engine_list = AIEngineList(AIVehicle.VT_ROAD);
-		engine_list.Valuate(AIEngine.GetRoadType)
-		engine_list.KeepValue(AIRoad.ROADTYPE_ROAD);
-		engine_list.Valuate(AIEngine.GetCargoType);
-		engine_list.KeepValue(passenger_cargo_id);
-
-		engine_list.Valuate(AIEngine.GetDesignDate);
-		engine_list.Sort(AIList.SORT_BY_VALUE, false);
-		engine = engine_list.Begin();
-			return engine;
-		
 	}
+	local engine_list = AIEngineList(AIVehicle.VT_ROAD);
+	/* Don't want trams... */
+	engine_list.Valuate(AIEngine.GetRoadType);
+	engine_list.KeepValue(AIRoad.ROADTYPE_ROAD);
+	
+	/* Only keep buses for now */
+	engine_list.Valuate(AIEngine.GetCargoType);
+	engine_list.KeepValue(passenger_cargo_id);
+
+	/* Use newest vehicle (It's what I do) */
+	engine_list.Valuate(AIEngine.GetDesignDate);
+	engine_list.Sort(AIList.SORT_BY_VALUE, false);
+	engine = engine_list.Begin();
+	return engine;
+}
 	
 function VehicleManager::DealWithBuildVehicleErrors(err)
-	{
-		switch(err)
-		{
-			case AIError.ERR_NOT_ENOUGH_CASH:
-				Warning("Not enough money. Waiting for more");
-					return 3;
+{
+	switch(err) {
+		case AIError.ERR_NOT_ENOUGH_CASH:
+			Warning("Not enough money to buy buses. Waiting for more");
+			return 3;
+		case AIVehicle.ERR_VEHICLE_TOO_MANY:
+			/* Gets dealt with in Start() */
+			Error("Too many vehicles");
+			return null;
+		case AIVehicle.ERR_VEHICLE_BUILD_DISABLED:
+			/* Shouldn't happen, but still... */
+			Error("ROADS VEHICLE TYPE IS DISABLED. THIS VERSION OF AROAI ONLY USES ROAD VEHICLES");
+			Error("PLEASE RE-ENABLE THEM, THEN RESTART GAME");
+			AroAI.Stop();
 			break;
-			case AIVehicle.ERR_VEHICLE_TOO_MANY:
-				//TODO: deal with
-				AIController.Sleep(5000);
-				Error("Too many vehicles");
-					return null;
+		case AIError.ERR_PRECONDITION_FAILED:
+			Warning("Error: ERR_PRECONDITION_FAILED");
+			return 5;
+		case AIVehicle.ERR_VEHICLE_WRONG_DEPOT:
+		default:
+			Warning("Unhandled error during vehicle buying: " + AIError.GetLastErrorString());
 			break;
-			case AIVehicle.ERR_VEHICLE_BUILD_DISABLED:
-				//shouldn't happen, but still:
-				Error("ROADS VEHICLE TYPE IS DISABLED. THIS VERSION OF AROAI ONLY USES ROAD VEHICLES");
-				Error("PLEASE RE-ENABLE THEM, THEN RESTART GAME");
-				AroAI.Stop();
-			break;
-			case AIVehicle.ERR_VEHICLE_WRONG_DEPOT:
-					//can't happen? silent ignore
-			break;
-			case AIError.ERR_PRECONDITION_FAILED:
-				Warning("Error: ERR_PRECONDITION_FAILED");
-					return 5;
-			break;
-			default:
-				Warning("Unknown error during vehicle building: " + AIError.GetLastErrorString());
-			break;
-		}
 	}
+}
 
 function VehicleManager::Info(string)
-	{
-		AILog.Info(Util.GameDate() + " [Vehicle Manager] " + string + ".");
-	}
-
+{
+	AILog.Info(Util.GameDate() + " [Vehicle Manager] " + string + ".");
+}
 
 function VehicleManager::Warning(string)
-	{
-		AILog.Warning(Util.GameDate() + " [Vehicle Manager] " + string + ".");
-	}
+{
+	AILog.Warning(Util.GameDate() + " [Vehicle Manager] " + string + ".");
+}
 
 function VehicleManager::Error(string)
-	{
-		AILog.Error(Util.GameDate() + " [Vehicle Manager] " + string + ".");
-	}
+{
+	AILog.Error(Util.GameDate() + " [Vehicle Manager] " + string + ".");
+}
 
 function VehicleManager::Debug(string)
-	{
-		AILog.Warning(Util.GameDate() + " [Vehicle Manager] DEBUG: " + string + ".");
-		AILog.Warning(Util.GameDate() + " [Vehicle Manager] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
-	}
+{
+	AILog.Warning(Util.GameDate() + " [Vehicle Manager] DEBUG: " + string + ".");
+	AILog.Warning(Util.GameDate() + " [Vehicle Manager] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
+}

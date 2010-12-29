@@ -21,29 +21,29 @@
 
 
 class AroAI extends AIInfo
+{
+	function GetAuthor()      {return "Charles Pigott (Lord Aro)";}
+	function GetName()        {return "AroAI";}
+	function GetDescription() {return "Lord Aro's really feeble attempt at making an AI. Currently buses only.";}
+	function GetVersion()     {return  96;}
+	function GetDate()        {return "2010-10-03";}
+	function CreateInstance() {return "AroAI";}
+//	function UseAsRandomAI()  {return  false;}
+	function GetShortName()   {return "A_AI";}
+	function GetAPIVersion()  {return "1.1";}
+	function GetURL()         {return "http://www.tt-forums.net/viewtopic.php?t=49496/ OR http://noai.openttd.org/projects/show/ai-aroai/";}
+	function GetSettings()
 	{
-		function GetAuthor()      {return "Charles Pigott (Lord Aro)";}
-		function GetName()        {return "AroAI";}
-		function GetDescription() {return "Lord Aro's really feeble attempt at making an AI. Currently buses only.";}
-		function GetVersion()     {return  73;}
-		function GetDate()        {return "2010-08-22";}
-		function CreateInstance() {return "AroAI";}
-//		function UseAsRandomAI()  {return  false;}
-		function GetShortName()   {return "A_AI";}
-		function GetAPIVersion()  {return "1.1";}
-		function GetURL()         {return "http://www.tt-forums.net/viewtopic.php?t=49496/ OR http://noai.openttd.org/projects/show/ai-aroai/";}
-		function GetSettings()
-		{
-			AddSetting({
-				name = "enable_road_vehs",
-				description = "Enable road vehicles",
-				easy_value = 1,
-				medium_value = 1,
-				hard_value = 1,
-				custom_value = 1,
-				flags = AICONFIG_BOOLEAN
-				});
-		}
+		AddSetting({
+			name = "enable_road_vehs",
+			description = "Enable road vehicles",
+			easy_value = 1,
+			medium_value = 1,
+			hard_value = 1,
+			custom_value = 1,
+			flags = AICONFIG_BOOLEAN
+			});
 	}
-	/* Tell the core we are an AI */
-	RegisterAI(AroAI());
+}
+/* Tell the core we are an AI */
+RegisterAI(AroAI());

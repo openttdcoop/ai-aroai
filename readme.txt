@@ -1,9 +1,9 @@
-V1.1.0.1
+V1.1.1
 
 AroAI - Lord Aro's feeble attempt at making an AI. Currently buses only.
 
-NOTE: This AI uses the 1.1.0 version of the AI and due to recent changes in it,
-      you now need at least r20563 for this AI to work properly
+NOTE: This AI uses the 1.1 version of the API and due to recent changes in it,
+	you now need OpenTTD r20563 or later for this AI to work properly
 
 All code is released under GPL v2, as I have nicked a lot of code from others whose license is 
 also GPL v2! 
@@ -17,12 +17,13 @@ Special thanks go to (in no particular order):
 		- Morloth;
 		- Dezmond_snz;
 		- Steffl;
-		- Dustin;
+		- Dustin (if it were not for him, I might have 
+				given up trying to make an AI altogether!);
 		- Kogut;
 		- Yexo (again, because he helped me so much);
 		
 	* Those who I nicked bits of their AI from:
-		- ManInTheBox - OTVI/Rondje om de Kerk;
+		- Maninthebox - OTVI, Rondje om de Kerk;
 		- Team Rocket - RocketAI;
 		
 	* Those who I nicked bits of their AI AND they helped me out:
@@ -32,28 +33,34 @@ Special thanks go to (in no particular order):
 		- Zuu - SuperLib;
 		
 	* orudge - for his wonderful forums;
-	* anybody else I've missed (please say if i have);
+	* anybody else I've missed (please say if I have);
 	* and finally, just to be cheesy, all the OpenTTD developers for making this wonderful game!
+
 
 MINOR TODO: (x.x.x++)
 	extra debugs
-	properly manageonly when no towns left to build in
-	less debugs while not enough money for road
-	merge BuildDepot() and BuildBusStation()
-	simplify Builder_BusRoute.Main()
-	deal with company merger ask
+	tidy up Start()
+	merge BuildBusStop() into BuildBusRouteObject()
+	think of a better name for BuildBusRouteObject()
 
 MAIN TODO: (x.x++.x) (in rough order)
+	deal with tunnel/bridge build errors
 	re-write town-finder (currently ignoring towns that have ben built through)
-	save/load support
 	remove failed bus stops (and depots)
-	better vehicle+cargo selector (think NoCAB)
+	manage failing vehicles
+	manage crashed vehicles
+	deal with company merger ask - only if AI can handle the vehicle types
+	autoreplace - crashed vehicles linked to this
+	manage lost vehicles
 	add check for towns being pre-connected (see wiki)
 	add time limit for pathfinding
 	add configurable no. of buses per town
-	autoreplace
-	make stations build properly adjacent
-	respect town road layout
+	reform debug output (again)
+	better vehicle and cargo selector (think NoCAB) - done in testai
+	make stations build properly adjacent (easy)
+	try to get subsidies
+	respect town road layout (pathzilla does it)
+	save/load support (?)
 
 WISHFUL THINKING TODO: (x++.x.x) (in rough order)
 	air support
@@ -72,5 +79,5 @@ http://www.tt-forums.net/viewtopic.php?t=49496/ (preferred)
 OR
 http://noai.openttd.org/projects/show/ai-aroai/
 
-	Hope you enjoy the AI (like that's likely),
+	Hope you enjoy the AI,
 		Charles Pigott (Lord Aro)

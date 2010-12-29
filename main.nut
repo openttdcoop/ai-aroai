@@ -22,29 +22,36 @@
 /*
 BEFORE RELEASE CHECK:
 	run stress test - check for no crashes
-	make sure versions are same (main.nut, info.nut & makefile)
-	update changelog
+	make sure versions are correct (main.nut, info.nut & makefile)
+	update readme & changelog
 	run makefile
 
 MINOR TODO: (x.x.x++)
 	extra debugs
-	properly manageonly when no towns left to build in
-	less debugs while not enough money for road
-	merge BuildDepot() and BuildBusStation()
-	simplify Builder_BusRoute.Main()
-	deal with company merger ask
+	tidy up Start()
+	merge BuildBusStop() into BuildBusItem()
+	think of a better name for BuildBusItem()
+	make AI un-sexist
 
 MAIN TODO: (x.x++.x) (in rough order)
+	deal with tunnel/bridge build errors
 	re-write town-finder (currently ignoring towns that have ben built through)
-	save/load support
 	remove failed bus stops (and depots)
-	better vehicle+cargo selector (think NoCAB)
+	manage failing vehicles
+	manage crashed vehicles
+	deal with company merger ask - only if AI can handle the vehicle types
+	autoreplace - crashed vehicles linked to this
+	manage lost vehicles
+	respect difficulty setting
 	add check for towns being pre-connected (see wiki)
 	add time limit for pathfinding
 	add configurable no. of buses per town
-	autoreplace
-	make stations build properly adjacent
-	respect town road layout
+	reform debug output (again)
+	better vehicle and cargo selector (think NoCAB) - done in testai
+	make stations build properly adjacent (easy)
+	try to get subsidies
+	respect town road layout (pathzilla does it)
+	save/load support (?)
 
 WISHFUL THINKING TODO: (x++.x.x) (in rough order)
 	air support
@@ -64,174 +71,198 @@ require("manager.nut");
 require("util.nut");
 
 class AroAI extends AIController
+{
+	/* Declare constants */
+	AI_VERSION = "1.1.1(r96)";
+	
+	AUTO_RENEW_MONEY = 0;		///< Amount of money to have before starting autorenew
+	AUTO_RENEW_MONTHS = -6;		///< Before/after max age of a vehicle to autorenew
+	MANAGE_ONLY_SLEEP_TIME = 1000;	///< Time sleeping when managing only
+	
+	constructor()
 	{
-		aiversion = "1.1.0.1(r73)";
-		constructor()
-		{
-			Builder_BusRoute = Builder_BusRoute();
-			VehicleManager = VehicleManager();
-			Manager = Manager();
-			Util = Util();
-		}
+		Builder_BusRoute = Builder_BusRoute();
+		VehicleManager = VehicleManager();
+		Manager = Manager();
+		Util = Util();
 	}
+}
 
 function AroAI::Start()
-	{
+{
+	this.Sleep(1);
+	GetVersionsAndStuff();
+	SetCompany(); //Set company stuff
+	while (true) { //Keep running. If Start() exits, the AI dies
 		this.Sleep(1);
-		GetVersionsAndStuff();
-		SetCompany(); //Set company stuff
-		while(true) //Keep running. If Start() exits, the AI dies
-		{
-			this.Sleep(1);
-			Warning("Main loop started");
-			Manager.ManageLoan();
-			Manager.ManageEvents();
-//			Debug("manageOnly = " + Builder_BusRoute.manageOnly);
-			if(Builder_BusRoute.manageOnly == false)
-			{
-				local vehList = AIVehicleList();
-				vehList.Valuate(AIVehicle.GetVehicleType);
-				vehList.KeepValue(AIVehicle.VT_ROAD);
-				local numOfVehs = vehList.Count();
-				if(AIGameSettings.GetValue("vehicle.max_roadveh") <=  numOfVehs)
-				{
-					Info("Max amount of road vehicles reached");
-					Builder_BusRoute.manageOnly = true;
-				}
-				else
-				{
-					Builder_BusRoute.Main();
-				}
+		Warning("Main loop started");
+		Manager.ManageLoan();
+		Manager.ManageEvents();
+		if (!Builder_BusRoute.manageOnly) {
+			local vehList = AIVehicleList();
+			vehList.Valuate(AIVehicle.GetVehicleType);
+			vehList.KeepValue(AIVehicle.VT_ROAD);
+			local maxVehs = vehList.Count();
+			if (AIGameSettings.GetValue("vehicle.max_roadveh") <=  maxVehs) {
+				Info("Max amount of road vehicles reached");
+				Builder_BusRoute.manageOnly = true;
+			} else {
+				Builder_BusRoute.Main();
 			}
-			else
-			{
-				Info("Sleeping because there is nothing to build");
-				this.Sleep(500);
-			}
+		} else {
+			Info("Sleeping because there is nothing to build");
+			this.Sleep(MANAGE_ONLY_SLEEP_TIME);
 		}
 	}
+}
 
 function AroAI::Stop()
-	{
-		Error("Something gone wrong. Clearing all signs");
-		Util.ClearAllSigns();
-		Error("Stopped");
-		Warning("(The error is on purpose)");
-		local var = 1/0;
- 	}
+{
+	Error("Something gone wrong. Clearing all signs");
+	Util.ClearAllSigns();
+	Error("Stopped");
+	Warning("(The error is on purpose)");
+	local crash = 1/0
+}
 
 function AroAI::Save()
-	{
-		Warning("TODO: Add Save/Load functionality");
-		local table = {}; //TODO: Add save data to the table.
-			return table;
-	}
+{
+	Warning("TODO: Add Save/Load functionality");
+	local table = {}; //TODO: Add save data to the table...maybe
+	return table;
+}
 
 function AroAI::Load(version, data)
-	{
-		//TODO: Add loading routines.
-	}
+{
+	//TODO: Add loading routines...maybe
+}
 
 function AroAI::SetCompany()
-	{
-		local a = AIBase.RandRange(15);
-		if (0==a)   {AICompany.SetName("Arioa International");}
-		if (1==a)   {AICompany.SetName("AroAI");}
-		if (2==a)   {AICompany.SetName("Aro Transport");}
-		if (3==a)   {AICompany.SetName("Aro & Co.");}
-		if (4==a)   {AICompany.SetName("Aro");}
-		if (5==a)   {AICompany.SetName("Aro Distribution");}
-		if (6==a)   {AICompany.SetName("Aro Logistics");}
-		if (7==a)   {AICompany.SetName("Aro Federal Delivery");}
-		if (8==a)   {AICompany.SetName("Aro Ltd.");}
-		if (9==a)   {AICompany.SetName("Aro Delivery");}
-		if (10==a)  {AICompany.SetName("Aro Network");}
-		if (11==a)  {AICompany.SetName("Aro Trans");}
-		if (12==a)  {AICompany.SetName("Aro Services");}
-		if (13==a)  {AICompany.SetName("Aro Management");}
-		if (14==a)  {AICompany.SetName("Aro Constructions");}
-		Info(AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
-
-		AICompany.SetPresidentGender(0);
-		AICompany.SetPresidentName("Lord Aro");
-		Info(AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
-
-		AICompany.SetAutoRenewStatus(true);
-		AICompany.SetAutoRenewMonths(-3);
-		AICompany.SetAutoRenewMoney(0);
-		BuildHQ();
+{ //TODO: More names, just to make sure it's always unique
+	local a = AIBase.RandRange(15);
+	switch (a) {
+		case 0:
+			AICompany.SetName("Arioa International");
+			break;
+		case 1:
+			AICompany.SetName("AroAI");
+			break;
+		case 2:
+			AICompany.SetName("Aro Transport");
+			break;
+		case 3:
+			AICompany.SetName("Aro & Co.");
+			break;
+		case 4:
+			AICompany.SetName("Aro");
+			break;
+		case 5:
+			AICompany.SetName("Aro Distribution");
+			break;
+		case 6:
+			AICompany.SetName("Aro Logistics");
+			break;
+		case 7:
+			AICompany.SetName("Aro Federal Delivery");
+			break;
+		case 8:
+			AICompany.SetName("Aro Ltd.");
+			break;
+		case 9:
+			AICompany.SetName("Aro Delivery");
+			break;
+		case 10:
+			AICompany.SetName("Aro Network");
+			break;
+		case 11:
+			AICompany.SetName("Aro Trans");
+			break;
+		case 12:
+			AICompany.SetName("Aro Services");
+			break;
+		case 13:
+			AICompany.SetName("Aro Management");
+			break;
+		case 14:
+			AICompany.SetName("Aro Constructions");
+			break;
 	}
+	Info(AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
+	
+	AICompany.SetPresidentGender(0);
+	AICompany.SetPresidentName("Lord Aro");
+	Info(AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
+	
+	AICompany.SetAutoRenewMonths(AUTO_RENEW_MONTHS);
+	AICompany.SetAutoRenewMoney(AUTO_RENEW_MONEY);
+	AICompany.SetAutoRenewStatus(true);
+	
+	BuildHQ();
+}
 
 function AroAI::GetVersionsAndStuff()
-	{
-		Info("AroAI v" + aiversion + " by Charles Pigott (Lord Aro) started");
-		Info("Special thanks to those who helped with the many problems had when making the AI")
-		local version = GetVersion();
-		Info("Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
+{
+	Info("AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
+	Info("Special thanks to those who helped with the many problems had when making the AI")
+	local version = GetVersion();
+	Info("Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
 		((version & (15 << 24)) >> 24) + "." + ((version & (15 << 20)) >> 20) + "" + 
 		(((version & (1 << 19)) >> 19)?" stable release, ":" r") + ((version & ((1 << 18) - 1))));
-		AILog.Info("=======================================")
+	AILog.Info("=======================================")
+}
+
+function AroAI::BuildHQ() //From Rondje
+{
+	if (AIMap.IsValidTile(AICompany.GetCompanyHQ(AICompany.COMPANY_SELF))) return; //From SimpleAI
+
+	/* Find SECOND biggest town for HQ, just to be different */
+	local towns = AITownList();
+	local HQtown = 0;
+	towns.Valuate(AITown.GetPopulation);
+	towns.Sort(AIList.SORT_BY_VALUE, false);
+	if (towns.Count == 1) {
+		HQtown = towns.Begin();
+	} else {
+		towns.RemoveTop(1);
+		HQtown = towns.Begin();
 	}
 
-function AroAI::BuildHQ() //from Rondje
-	{
-		if(AIMap.IsValidTile(AICompany.GetCompanyHQ(AICompany.COMPANY_SELF))) //from simpleai
+	/* Find empty 2x2 square as close to town centre as possible */
+	local maxRange = Util.Sqrt(AITown.GetPopulation(HQtown)/100) + 5;
+	local HQArea = AITileList();
+
+	HQArea.AddRectangle(AITown.GetLocation(HQtown) - AIMap.GetTileIndex(maxRange, maxRange), AITown.GetLocation(HQtown) + AIMap.GetTileIndex(maxRange, maxRange));
+	HQArea.Valuate(AITile.IsBuildableRectangle, 2, 2);
+	HQArea.KeepValue(1);
+	HQArea.Valuate(AIMap.DistanceManhattan, AITown.GetLocation(HQtown));
+	HQArea.Sort(AIList.SORT_BY_VALUE, true);
+	for (local tile = HQArea.Begin(); !HQArea.IsEnd(); tile = HQArea.Next()) {
+		if (AICompany.BuildCompanyHQ(tile)) {
+			AISign.BuildSign(tile, "AroAI HQ");
+			Info("HQ building completed");
 			return;
-
-		//Find second biggest town for HQ, just to be different :p
-		local towns = AITownList();
-		local HQtown = 0;
-		towns.Valuate(AITown.GetPopulation);
-		towns.Sort(AIList.SORT_BY_VALUE, false);
-		if(towns.Count == 1)
-		{
-			HQtown = towns.Begin();
 		}
-		else
-		{
-			towns.RemoveTop(1);
-			HQtown = towns.Begin();
-		}
-
-		//Find empty 2x2 square as close to town centre as possible
-		local maxRange = Util.Sqrt(AITown.GetPopulation(HQtown)/100) + 5;
-		local HQArea = AITileList();
-
-		HQArea.AddRectangle(AITown.GetLocation(HQtown) - AIMap.GetTileIndex(maxRange, maxRange), AITown.GetLocation(HQtown) + AIMap.GetTileIndex(maxRange, maxRange));
-		HQArea.Valuate(AITile.IsBuildableRectangle, 2, 2);
-		HQArea.KeepValue(1);
-		HQArea.Valuate(AIMap.DistanceManhattan, AITown.GetLocation(HQtown));
-		HQArea.Sort(AIList.SORT_BY_VALUE, true);
-		for (local tile = HQArea.Begin(); !HQArea.IsEnd(); tile = HQArea.Next()) 
-		{
-			if (AICompany.BuildCompanyHQ(tile)) 
-			{
-				AISign.BuildSign(tile, "AroAI HQ");
-				Info("HQ building completed");
-					return;
-			}
-		}
-		Warning("No possible HQ location found");
 	}
+	Warning("No possible HQ location found");
+}
 
 function AroAI::Info(string)
-	{
-		AILog.Info(Util.GameDate() + " [AroAI] " + string + ".");
-	}
-
+{
+	AILog.Info(Util.GameDate() + " [AroAI] " + string + ".");
+}
 
 function AroAI::Warning(string)
-	{
-		AILog.Warning(Util.GameDate() + " [AroAI] " + string + ".");
-	}
+{
+	AILog.Warning(Util.GameDate() + " [AroAI] " + string + ".");
+}
 
 function AroAI::Error(string)
-	{
-		AILog.Error(Util.GameDate() + " [AroAI] " + string + ".");
-	}
+{
+	AILog.Error(Util.GameDate() + " [AroAI] " + string + ".");
+}
 
 function AroAI::Debug(string)
-	{
-		AILog.Warning(Util.GameDate() + " [AroAI] DEBUG: " + string + ".");
-		AILog.Warning(Util.GameDate() + " [AroAI] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
-	}
+{
+	AILog.Warning(Util.GameDate() + " [AroAI] DEBUG: " + string + ".");
+	AILog.Warning(Util.GameDate() + " [AroAI] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
+}
