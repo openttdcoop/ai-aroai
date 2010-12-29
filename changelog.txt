@@ -1,0 +1,35 @@
+AROAI CHANGELOG
+
+1.1.0 (2010-08-21)
+------------------------------------
+- Change: Simplify the sign remover (r72)
+- Change: A debug in loan management to something that makes better sense (r71)
+- Feature: Build Bus Stations when drive through bus stations cannot (r70)
+- Add: noai.openttd.org url (r69)
+- Change: Rewrite build depot code as when out of money the AI could freeze/not build the depot (r68)
+- Change: Fiddle around with build route errors (r67)
+- Fix: AIAbstractList has been replaced with AIList, so needed to upgrade. AI NOW REQUIRES r20563 OR LATER(r66)
+- Feature: Deal with build road depot errors (r65)
+- Change: An Error() to a Warning() in Stop(); to make it clearer (r64)
+- Change: Rename debugs.nut to util.nut and move some functions into it (r63)
+- Feature: Reformed debug output (r62)
+- Feature: Events Manager (r61)
+- Change: Some debugs in manager.nut (r60)
+
+1.0.2 (2010-08-09)
+------------------------------------
+- Add: Forum url (r59)
+- Fix: Variable not declared properly in vehiclemanager.nut (r59)
+- Change: Rename moneymanager.nut to manager.nut in preparation for something... (r58)
+- Fix: Display town name in GetTowns (r57)
+- Add: Properly limit AI to management only when vehicle limit reached or unable to build bus route properly (r56)
+
+1.0.1 (2010-08-02)
+------------------------------------
+- Fix: A debug output was an Info instead of a Warning (r55)
+- Fix: When out of money, the AI would not build the route properly [Brumi] (r54)
+
+1.0.0 (2010-07-31)
+------------------------------------
+First release of AroAI (r53)
+- Feature: Bus support

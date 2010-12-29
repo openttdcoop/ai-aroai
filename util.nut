@@ -1,0 +1,66 @@
+/*
+ * debugs.nut
+ * This file is part of AroAI
+ *
+ * Copyright (C) 2010 - Charles Pigott (Lord Aro)
+ *
+ * AroAI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * AroAI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AroAI; if not, see <http://www.gnu.org/licenses/> or
+ * write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
+class Util
+	{
+	}
+
+function Util::GameDate()
+	{
+		local date = AIDate.GetCurrentDate();
+		local year = AIDate.GetYear(date);
+		local month = AIDate.GetMonth(date);
+		if(month < 10)
+		{
+			month = "0" + month;
+		}
+		local day = AIDate.GetDayOfMonth(date);
+		if(day < 10)
+		{
+			day = "0" + day;
+		}
+		return day + "/" + month + "/" + year;
+	}
+
+function Util::Sqrt(i) //from Rondje
+	{
+		if (i == 0)
+			return 0;   // Avoid divide by zero
+		local n = (i / 2) + 1;       // Initial estimate, never low
+		local n1 = (n + (i / n)) / 2;
+		while (n1 < n)
+		{
+			n = n1;
+			n1 = (n + (i / n)) / 2;
+		}
+			return n;
+	}
+
+function Util::ClearAllSigns()
+	{
+		local sign_list = AISignList();
+		for(local i = sign_list.Begin(); !sign_list.IsEnd(); i = sign_list.Next())
+		{
+			AISign.RemoveSign(i);
+		}
+	}
