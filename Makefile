@@ -1,6 +1,6 @@
 # Configuration
 AI_NAME = AroAI
-AI_VERSION = 1.1.0(r72)
+AI_VERSION = 1.1.0.1(r73)
 # End of configuration
 
 FILES = *.nut *.txt 

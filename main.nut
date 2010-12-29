@@ -65,7 +65,7 @@ require("util.nut");
 
 class AroAI extends AIController
 	{
-		aiversion = "1.1.0(r72)";
+		aiversion = "1.1.0.1(r73)";
 		constructor()
 		{
 			Builder_BusRoute = Builder_BusRoute();

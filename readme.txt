@@ -1,4 +1,4 @@
-V1.1.0
+V1.1.0.1
 
 AroAI - Lord Aro's feeble attempt at making an AI. Currently buses only.
 

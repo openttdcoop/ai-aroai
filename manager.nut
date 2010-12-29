@@ -34,7 +34,7 @@ function Manager::ManageLoan()
 		Info("Managing loan");
 		if(AICompany.GetBankBalance(AICompany.COMPANY_SELF) >= 750000)
 		{
-			Info(AICompany.GetName("The company now has more than £750000. Reducing Loan to minimum");
+			Info("The company now has more than £750000. Reducing Loan to minimum");
 			AICompany.SetLoanAmount(0);
 				return;
 		}

@@ -25,8 +25,8 @@ class AroAI extends AIInfo
 		function GetAuthor()      {return "Charles Pigott (Lord Aro)";}
 		function GetName()        {return "AroAI";}
 		function GetDescription() {return "Lord Aro's really feeble attempt at making an AI. Currently buses only.";}
-		function GetVersion()     {return  72;}
-		function GetDate()        {return "2010-08-21";}
+		function GetVersion()     {return  73;}
+		function GetDate()        {return "2010-08-22";}
 		function CreateInstance() {return "AroAI";}
 //		function UseAsRandomAI()  {return  false;}
 		function GetShortName()   {return "A_AI";}
