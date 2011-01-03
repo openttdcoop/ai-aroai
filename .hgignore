@@ -1,0 +1,23 @@
+# Use glob syntax:
+syntax: glob
+
+# The local makefile should be ignored:
+Makefile.local
+
+# Ignore directories from bundle creation / install:
+AroAI*
+*.tar
+
+# Ignore frequent development left-overs like
+# editor backups, patches, rejects etc. pp
+**.orig
+**.bak
+**.log
+**.rej
+**.diff
+**.project
+**.stuff
+
+# Files created by Mac image preview and file browser:
+**/.DS_Store
+**/Thumbs.db
