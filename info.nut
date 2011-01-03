@@ -19,13 +19,14 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+require("version.nut");
 
 class AroAI extends AIInfo
 {
 	function GetAuthor()      {return "Charles Pigott (Lord Aro)";}
 	function GetName()        {return "AroAI";}
-	function GetDescription() {return "Lord Aro's really feeble attempt at making an AI. Currently buses only.";}
-	function GetVersion()     {return  96;}
+	function GetDescription() {return "Lord Aro's really feeble attempt at making an AI. Currently buses only. Version: " + _major_ver + "." + _minor_ver + " Rev: " + _repos_ver;}
+	function GetVersion()     {return  _major_ver << 24 | _minor_ver << 16 | _repos_ver;}
 	function GetDate()        {return "2010-10-03";}
 	function CreateInstance() {return "AroAI";}
 //	function UseAsRandomAI()  {return  false;}

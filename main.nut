@@ -34,13 +34,12 @@ require("util.nut");
 
 class AroAI extends AIController
 {
-	/* Declare constants */
-	AI_VERSION = "1.1.1(r96)";
-	
+	AI_VERSION = "Version: " + _major_ver + "." + _minor_ver + " Rev: " + ai_revision;
+
 	AUTO_RENEW_MONEY = 0;		///< Amount of money to have before starting autorenew
 	AUTO_RENEW_MONTHS = -6;		///< Before/after max age of a vehicle to autorenew
 	MANAGE_ONLY_SLEEP_TIME = 1000;	///< Time sleeping when managing only
-	
+
 	constructor()
 	{
 		Builder_BusRoute = Builder_BusRoute();
