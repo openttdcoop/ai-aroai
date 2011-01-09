@@ -1,6 +1,6 @@
 AROAI CHANGELOG
 
-1.1.1 (2010-10-xx)
+1.1.1 (2010-12-29)
 ------------------------------------
 - Fix: A temporary fix for an invalid engineID (r96)
 - Add: GetEventName() so AI can print event names (r95)

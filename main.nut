@@ -22,48 +22,10 @@
 /*
 BEFORE RELEASE CHECK:
 	run stress test - check for no crashes
-	make sure versions are correct (main.nut, info.nut & makefile)
 	update readme & changelog
 	run makefile
-
-MINOR TODO: (x.x.x++)
-	extra debugs
-	tidy up Start()
-	merge BuildBusStop() into BuildBusItem()
-	think of a better name for BuildBusItem()
-	make AI un-sexist
-
-MAIN TODO: (x.x++.x) (in rough order)
-	deal with tunnel/bridge build errors
-	re-write town-finder (currently ignoring towns that have ben built through)
-	remove failed bus stops (and depots)
-	manage failing vehicles
-	manage crashed vehicles
-	deal with company merger ask - only if AI can handle the vehicle types
-	autoreplace - crashed vehicles linked to this
-	manage lost vehicles
-	respect difficulty setting
-	add check for towns being pre-connected (see wiki)
-	add time limit for pathfinding
-	add configurable no. of buses per town
-	reform debug output (again)
-	better vehicle and cargo selector (think NoCAB) - done in testai
-	make stations build properly adjacent (easy)
-	try to get subsidies
-	respect town road layout (pathzilla does it)
-	save/load support (?)
-
-WISHFUL THINKING TODO: (x++.x.x) (in rough order)
-	air support
-	road cargo support
-	rail support
-		Double rail support
-		Rail networks
-	ship support
-	write own pathfinders (road first)
-
-	6.x.x by end :)
 */
+
 import("pathfinder.road", "RoadPathFinder", 3);
 require("vehiclemanager.nut");
 require("builder_busroute.nut");
