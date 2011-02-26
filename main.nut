@@ -31,10 +31,11 @@ require("vehiclemanager.nut");
 require("builder_busroute.nut");
 require("manager.nut");
 require("util.nut");
+require("version.nut");
 
 class AroAI extends AIController
 {
-	AI_VERSION = "Version: " + _major_ver + "." + _minor_ver + " Rev: " + ai_revision;
+	AI_VERSION = "Version: " + _major_ver + "." + _minor_ver + " Rev: " + _repos_ver;
 
 	AUTO_RENEW_MONEY = 0;		///< Amount of money to have before starting autorenew
 	AUTO_RENEW_MONTHS = -6;		///< Before/after max age of a vehicle to autorenew
