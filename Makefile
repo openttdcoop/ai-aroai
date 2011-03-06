@@ -29,7 +29,7 @@ bundle_tar:
 	$(_V) echo "/* version.nut - $(shell date -u) */" > $(VER_FILE)
 	$(_V) echo "_major_ver  <- $(MA_VERSION);" >> $(VER_FILE)
 	$(_V) echo "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
-	$(_V) echo "_repos_ver  <- $(REPO_REVISION);" >> $(VER_FILE)
+	$(_V) echo "_repos_ver  <- $(REPO_REVISION) + 96; //The old svn repo version" >> $(VER_FILE)
 	$(_V) tar -cf $(TAR_FILENAME) $(BUNDLE_NAME)
 
 clean:

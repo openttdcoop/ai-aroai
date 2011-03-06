@@ -1,5 +1,5 @@
 /*
-	This file would only be used when you wan to use the AI directly from
+	This file would only be used when you want to use the AI directly from
 	repository. Use 'make' to get the actual revision number
 */
 _major_ver <- $FF;
