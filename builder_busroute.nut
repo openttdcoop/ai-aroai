@@ -54,14 +54,14 @@ function Builder_BusRoute::Main()
 	local busStation_a = BuildBusStop(town);
 	if (busStation_a == null) return;
 
-	local depot_tile_a = BuildBusRouteObject(town_a, "depot");
+	local depot_tile_a = BuildRVStation(town_a, "depot");
 	if (depot_tile_a == null) return;
 		
 	town = town_b;
 	local busStation_b = BuildBusStop(town);
 	if (busStation_b == null) return;
 		
-	local depot_tile_b = BuildBusRouteObject(town_b, "depot");
+	local depot_tile_b = BuildRVStation(town_b, "depot");
 	if (depot_tile_b == null) return;
 	
 	if (VehicleManager.BuildBusEngines(depot_tile_a, busStation_a, busStation_b) == null) return;
@@ -220,7 +220,7 @@ function Builder_BusRoute::BuildBusStop(town)
 								break;
 							case AIRoad.ERR_ROAD_CANNOT_BUILD_ON_TOWN_ROAD:
 								Info("Building on town roads disabled. Building a bus station instead");
-								station = BuildBusRouteObject(town, "station");
+								station = BuildRVStation(town, "station");
 								if (station == null) return null;
 								else return station;
 							case AIError.ERR_VEHICLE_IN_THE_WAY: //TODO: handle it
@@ -243,7 +243,7 @@ function Builder_BusRoute::BuildBusStop(town)
 	return null;
 }
 
-function Builder_BusRoute::BuildBusRouteObject(townid, type)
+function Builder_BusRoute::BuildRVStation(townid, type)
 {
 	local buildType = null;
 	Info("Building bus " + type + " in " + AITown.GetName(townid));
