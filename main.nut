@@ -162,8 +162,11 @@ function AroAI::SetCompany()
 	}
 	Info(AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
 	
-	AICompany.SetPresidentGender(0);
-	AICompany.SetPresidentName("Lord Aro");
+	if(AICompany.GetPresidentGender(AICompany.COMPANY_SELF) == 0) {
+		AICompany.SetPresidentName("Lord Aro");
+	} else {
+		AICompany.SetPresidentName("Lady Aro");
+	}
 	Info(AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
 	
 	AICompany.SetAutoRenewMonths(AUTO_RENEW_MONTHS);
