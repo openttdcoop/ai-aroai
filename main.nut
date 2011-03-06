@@ -35,12 +35,15 @@ require("version.nut");
 
 class AroAI extends AIController
 {
-	/* Initialise constants */
+	/* Declare constants */
 	AI_VERSION = _major_ver + "." + _minor_ver + "." + _repos_ver;
 
 	AUTO_RENEW_MONEY = 0;		///< Amount of money to have before starting autorenew
 	AUTO_RENEW_MONTHS = -6;		///< Before/after max age of a vehicle to autorenew
 	MANAGE_ONLY_SLEEP_TIME = 1000;	///< Time sleeping when managing only
+
+	/* Declare variables */
+	loaded = null;
 
 	constructor()
 	{
@@ -48,15 +51,21 @@ class AroAI extends AIController
 		VehicleManager = VehicleManager();
 		Manager = Manager();
 		Util = Util();
+		
+		/* Initialise variables */
+		loaded = false;
 	}
 }
 
 function AroAI::Start()
 {
 	this.Sleep(1);
-	GetVersionsAndStuff();
-	SetCompany(); //Set company stuff
-	while (true) { //Keep running. If Start() exits, the AI dies
+	if(!loaded) {
+		GetVersionsAndStuff();
+		SetCompany();
+	}
+	/* Keep running. If Start() exits, the AI dies */
+	for(;;) {
 		this.Sleep(1);
 		Warning("Main loop started");
 		Manager.ManageLoan();
@@ -90,14 +99,15 @@ function AroAI::Stop()
 
 function AroAI::Save()
 {
-	Warning("TODO: Add Save/Load functionality");
-	local table = {}; //TODO: Add save data to the table...maybe
+	//TODO: Add save data to the table...maybe
+	local table = {};
 	return table;
 }
 
 function AroAI::Load(version, data)
 {
-	//TODO: Add loading routines...maybe
+	loaded = true;
+	Warning("Loaded");
 }
 
 function AroAI::SetCompany()
