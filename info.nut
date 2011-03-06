@@ -32,7 +32,7 @@ class AroAI extends AIInfo
 //	function UseAsRandomAI()  {return  false;}
 	function GetShortName()   {return "A_AI";}
 	function GetAPIVersion()  {return "1.1";}
-	function GetURL()         {return "http://www.tt-forums.net/viewtopic.php?t=49496/ OR http://noai.openttd.org/projects/show/ai-aroai/";}
+	function GetURL()         {return "http://www.tt-forums.net/viewtopic.php?t=49496/ OR http://dev.openttdcoop.org/projects/ai-aroai/";}
 	function GetSettings()
 	{
 		AddSetting({
