@@ -7,6 +7,7 @@ shell          ?= /bin/sh
 HG             ?= hg
 
 REPO_REVISION  ?= $(shell $(HG) id -n | cut -d+ -f1)
+REPO_REVISION  += 96
 REPO_TAGS      ?= $(shell $(HG) id -t | grep -v "tip")
 REPO_LAST_TAG  ?= $(shell $(HG) tags | sed -e"1d;q" | cut -d" " -f1)
 REPO_USE_TAG   := $(shell [ -n "$(REPO_TAGS)" ] && echo $(REPO_TAGS) || echo $(REPO_LAST_TAG))
@@ -29,7 +30,7 @@ bundle_tar:
 	$(_V) echo "/* version.nut - $(shell date -u) */" > $(VER_FILE)
 	$(_V) echo "_major_ver  <- $(MA_VERSION);" >> $(VER_FILE)
 	$(_V) echo "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
-	$(_V) echo "_repos_ver  <- $(REPO_REVISION) + 96; //The old svn repo version" >> $(VER_FILE)
+	$(_V) echo "_repos_ver  <- $(REPO_REVISION);" >> $(VER_FILE)
 	$(_V) tar -cf $(TAR_FILENAME) $(BUNDLE_NAME)
 
 clean:
