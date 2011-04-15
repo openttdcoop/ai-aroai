@@ -1,4 +1,4 @@
-AroAI
+AroAI {{VERSION_STRING}}
 ----------------
 
 Contents:
@@ -19,6 +19,7 @@ Contents:
 AroAI - Lord Aro's feeble attempt at making an AI. Currently buses only.
 
 Name of this Repo:  ai-aroai
+Repo revision: r{{REPO_REVISION}}
 
 Comments, bug reports, code optimisations and suggestions are always
 welcome at: http://dev.openttdcoop.org/projects/ai-aroai/issues/

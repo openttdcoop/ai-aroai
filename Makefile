@@ -17,10 +17,10 @@
 
 FILENAME       := AroAI
 
-shell          ?= /bin/sh
+shell          ?= /bin/bash
 HG             ?= hg
 
-REPO_REVISION  := $(shell let tmp=$(shell $(HG) id -n | cut -d+ -f1)+96; echo $$tmp)
+REPO_REVISION  := $(shell let tmp=`$(HG) id -n | cut -d+ -f1`+96; echo $$tmp)
 REPO_TAGS      ?= $(shell $(HG) id -t | grep -v "tip")
 REPO_LAST_TAG  ?= $(shell $(HG) tags | sed -e"1d;q" | cut -d" " -f1)
 REPO_USE_TAG   := $(shell [ -n "$(REPO_TAGS)" ] && echo $(REPO_TAGS) || echo $(REPO_LAST_TAG))
@@ -35,6 +35,9 @@ TAR_FILENAME   := $(BUNDLE_NAME).tar
 _E             := @echo
 _V             := @
 
+REPO_REVISION_DUMMY  := {{REPO_REVISION}}
+VERSION_STRING_DUMMY := {{VERSION_STRING}}
+
 all: bundle_tar
 
 bundle_tar:
@@ -44,12 +47,16 @@ bundle_tar:
 	$(_V) echo "_major_ver  <- $(MA_VERSION);" >> $(VER_FILE)
 	$(_V) echo "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
 	$(_V) echo "_repos_ver  <- $(REPO_REVISION);" >> $(VER_FILE)
+	$(_V) sed -e "s/$(REPO_REVISION_DUMMY)/$(REPO_REVISION)/" -e "s/$(VERSION_STRING_DUMMY)/$(VERSION_STRING)/" readme.ptxt > readme.txt
+	$(_V) cp changelog.ptxt changelog.txt
 	$(_V) tar -cf $(TAR_FILENAME) $(BUNDLE_NAME)
 
 clean:
 	$(_E) "[Clean]"
 	$(_V) -rm -r -f $(BUNDLE_NAME)
 	$(_V) -rm -r -f $(TAR_FILENAME)
+	$(_V) -rm -f readme.txt
+	$(_V) -rm -f changelog.txt
 
 test:
 	$(_E) "HG:                           $(HG)"
