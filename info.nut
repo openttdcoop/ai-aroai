@@ -22,7 +22,7 @@ class AroAI extends AIInfo
 	function GetName()        {return "AroAI";}
 	function GetDescription() {return "Lord Aro's really feeble attempt at making an AI. Currently buses only. Version: " + _major_ver + "." + _minor_ver + "." + _repos_ver;}
 	function GetVersion()     {return  _repos_ver;}
-	function GetDate()        {return "2010-10-03";}
+	function GetDate()        {return "2011-04-15";}
 	function CreateInstance() {return "AroAI";}
 //	function UseAsRandomAI()  {return  false;}
 	function GetShortName()   {return "A_AI";}

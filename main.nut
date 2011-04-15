@@ -17,7 +17,8 @@
 /*
 BEFORE RELEASE CHECK:
 	run stress test - check for no crashes
-	update readme & changelog
+	update readme(check) & info.nut(date)
+	update changelog
 	run makefile
 */
 

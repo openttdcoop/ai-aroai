@@ -1,5 +1,18 @@
 AROAI CHANGELOG
 
+1.2 (2011-04-15)
+------------------------------------
+- Feature: New version system (r7-r13)
+- Add: Don't reset the company information on load (r15)
+- Add: Automatic versioning of readme.txt (r26)
+- Change: Rewrite the readme (r24)
+- Change: Add 96 to the version compared with the HG repo revision, so there are no incompatibilities caused by the lower version number (r19-r23)
+- Change: Switch to openttdcoop hg repo (r-numerous)
+- Change: Make the AI un-sexist (r18)
+- Fix: A possible infinite loop if no path was found (r27)
+
+
+------------------------------------ Archived Changelog from the SVN repo ------------------------------------
 1.1.1 (2010-12-29)
 ------------------------------------
 - Fix: A temporary fix for an invalid engineID (r96)
