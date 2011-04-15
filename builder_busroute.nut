@@ -117,6 +117,7 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 	/* No path was found */
 	if (path == null) {
 		Error("No route found");
+		numToRemove++;
 		return null;
 	}
 	Info("Route found. (Tried " + counter + " times) Building started");
