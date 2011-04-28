@@ -48,12 +48,12 @@ function Manager::ManageEvents()
 			case AIEvent.AI_ET_COMPANY_BANKRUPT:
 				local companyname = AICompany.GetName(AIEventCompanyBankrupt.Convert(event).GetCompanyID());
 				/* Can't always get company name because it's already gone */
-				if (!companyname) AILog.Info(Util.GameDate() + " [Manager] A company has gone bankrupt. FAILED!!");
-				else AILog.Info(Util.GameDate() + " [Manager] " + companyname + " has gone bankrupt. FAILED!!");
+				if (!companyname) Info("A company has gone bankrupt. Better luck next time..");
+				else Info(companyname + " has gone bankrupt. Better luck next time..");
 				break;
 			case AIEvent.AI_ET_COMPANY_IN_TROUBLE:
 				local companyname = AICompany.GetName(AIEventCompanyInTrouble.Convert(event).GetCompanyID());
-				Info(companyname + " is in trouble and may go bankrupt soon. HA");
+				Info(companyname + " is in trouble and may go bankrupt soon");
 				break;
 			case AIEvent.AI_ET_COMPANY_MERGER:
 				local oldcompanyname = AICompany.GetName(AIEventCompanyMerger.Convert(event).GetOldCompanyID());
