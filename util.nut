@@ -17,7 +17,7 @@
 
 class Util
 {
-	DATE_2_DIGITS = 10;	///< Make sure the date always has 2 digits
+	DATE_2_DIGITS = 10; ///< Make sure the date always has 2 digits
 }
 
 function Util::GameDate()
@@ -54,3 +54,4 @@ function Util::ClearAllSigns()
 		AISign.RemoveSign(i);
 	}
 }
+

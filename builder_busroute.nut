@@ -18,10 +18,10 @@
 class Builder_BusRoute
 {
 	/* Declare constants */
-	MAX_TOWN_DISTANCE = 125;	///< Maximum distance from tile_a
-	PATHFINDER_ITERATIONS = 100;	///< Number of iterations to try before failing
-	SLEEP_TIME_MONEY = 50;		///< How long to sleep when not enough money
-	SLEEP_TIME_VEHICLE = 10;	///< How long to sleep when vehicle is in the way
+	MAX_TOWN_DISTANCE = 125;     ///< Maximum distance from tile_a
+	PATHFINDER_ITERATIONS = 100; ///< Number of iterations to try before failing
+	SLEEP_TIME_MONEY = 50;       ///< How long to sleep when not enough money
+	SLEEP_TIME_VEHICLE = 10;     ///< How long to sleep when vehicle is in the way
 
 	/* Declare variables */	
 	townList = null;
@@ -67,7 +67,7 @@ function Builder_BusRoute::Main()
 
 function Builder_BusRoute::GetTowns()
 {
-	 /* Reset variables */
+	/* Reset variables */
 	town_a = null;
 	town_b = null;
 
@@ -81,12 +81,16 @@ function Builder_BusRoute::GetTowns()
 		manageOnly = true;
 		return null;
 	}
-	townList.RemoveTop(1);//Remove town_a
+	/* Remove town_a */
+	townList.RemoveTop(1);
+
 	local tile_a = AITown.GetLocation(town_a);
 	townList.Valuate(AITown.GetDistanceManhattanToTile, tile_a);
-	townList.KeepBelowValue(MAX_TOWN_DISTANCE); //Keep towns within certain distance
+
+	/* Keep towns within certain distance */
+	townList.KeepBelowValue(MAX_TOWN_DISTANCE);
 	townList.Valuate(AITown.GetRating, AICompany.COMPANY_SELF);
-	townList.KeepValue(AITown.TOWN_RATING_NONE);//TODO: Improve
+	townList.KeepValue(AITown.TOWN_RATING_NONE);// TODO: Improve
 	if (townList.IsEmpty()) {
 		Warning("No serviceable towns within radius of " + AITown.GetName(town_a) + ". Moving to next town");
 		numToRemove++;
@@ -94,14 +98,19 @@ function Builder_BusRoute::GetTowns()
 	}
 	townList.Valuate(AITown.GetPopulation);
 	townList.Sort(AIList.SORT_BY_VALUE, false);
-	town_b = townList.Begin(); //Pick the top one
+
+	/* Pick the top one */
+	town_b = townList.Begin();
 	return town_a, town_b;
 }
 
 function Builder_BusRoute::BuildRoad(town_a, town_b)
 {
-	AIRoad.SetCurrentRoadType(AIRoad.ROADTYPE_ROAD); //Set roadtype
-	stopMoneyDebug = 10; //Reset variable
+	/* Set roadtype */
+	AIRoad.SetCurrentRoadType(AIRoad.ROADTYPE_ROAD);
+
+	/* Reset variable */
+	stopMoneyDebug = 10;
 	Info("Planning route from " + AITown.GetName(town_a) + " to " + AITown.GetName(town_b));
 	local pathfinder = RoadPathFinder();
 	pathfinder.cost.turn = 1;
@@ -109,7 +118,7 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 	local path = false;
 	local counter = 0;
 	while (path == false) {
-		/* Number of attempts at finding path TODO: check */
+		/* Number of attempts at finding path */
 		path = pathfinder.FindPath(PATHFINDER_ITERATIONS);
 		counter++;
 		AIController.Sleep(1);
@@ -187,7 +196,7 @@ function Builder_BusRoute::BuildBusStop(town)
 	Info("Building bus stop in " + AITown.GetName(town));
 	/* Find empty square as close to town centre as possible */
 	local range = 1;
-	local max_range = Util.Sqrt(AITown.GetPopulation(town)/100) + 2; //TODO check value correctness 
+	local max_range = Util.Sqrt(AITown.GetPopulation(town)/100) + 2;
 	local area = AITileList();
 		
 	while (range < max_range) {
@@ -199,7 +208,9 @@ function Builder_BusRoute::BuildBusStop(town)
 		area.Valuate(AITile.GetSlope);
 		area.KeepValue(AITile.SLOPE_FLAT);
 		area.Valuate(AIRoad.GetNeighbourRoadCount);
-		area.KeepValue(2);	//Entrance and exit; allow 1 as well?
+
+		/* Entrance and exit. TODO: allow 1 as well? */
+		area.KeepValue(2);
 		if (area.Count()) {
 			for (local station = area.Begin(); !area.IsEnd(); station = area.Next()) {
 				local opening = getRoadTile(station);
@@ -303,7 +314,8 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 					local buildStructure = null;
 					if (type == "depot") buildStructure = AIRoad.BuildRoadDepot(buildTile, buildFront);
 					else if (type == "station") buildStructure = AIRoad.BuildRoadStation(buildTile, buildFront, AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_JOIN_ADJACENT);
-					else return null; //Something wrong, shouldn't happen
+					/* Something wrong, shouldn't happen */
+					else return null;
 					if (!buildStructure) {
 						switch (AIError.GetLastError()) {
 							case AIError.ERR_NOT_ENOUGH_CASH:

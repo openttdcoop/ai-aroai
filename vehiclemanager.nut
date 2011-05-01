@@ -16,7 +16,7 @@
 
 class VehicleManager
 {	
-	NUM_VEHICLES_PER_ROUTE = 5;	///< Number of vehicles to build per route
+	NUM_VEHICLES_PER_ROUTE = 5; ///< Number of vehicles to build per route
 	
 	engine = -1;
 }
@@ -59,20 +59,13 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 		vehicle_id = AIVehicle.CloneVehicle(depot_tile, builtVehicle_id, true);
 		if(!AIVehicle.IsValidVehicle(vehicle_id)) {
 			local dwbve = VehicleManager.DealWithBuildVehicleErrors(AIError.GetLastError());
-				if(dwbve == null) return null;
-				if(dwbve == 3) {
-					while(AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIEngine.GetPrice(engine)) {
-						AIController.Sleep(Builder_BusRoute.SLEEP_TIME_MONEY);
-					}
-					vehicle_id = AIVehicle.CloneVehicle(depot_tile, builtVehicle_id, true);
+			if(dwbve == null) return null;
+			if(dwbve == 3) {
+				while(AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIEngine.GetPrice(engine)) {
+					AIController.Sleep(Builder_BusRoute.SLEEP_TIME_MONEY);
 				}
-/*				if(dwbve == 5) {
-				Debug("c = " + c);		//Keep this for now
-				Debug("engine = " + engine);
-				Debug("depot_tile = " + depot_tile);
-				Debug("vehicle_id = " + vehicle_id);
-				Debug("old_vehicle_id = " + old_vehicle_id);
-				}*/
+				vehicle_id = AIVehicle.CloneVehicle(depot_tile, builtVehicle_id, true);
+			}
 		}
 		AIVehicle.StartStopVehicle(vehicle_id); //Start cloned vehicle
 		Info(c + "/" + NUM_VEHICLES_PER_ROUTE + " buses built");
@@ -84,8 +77,9 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 }
 	
 function VehicleManager::SelectVehicles()
-{ //TODO: Better vehicle selector
-	/* Get passenger cargo ID */
+{
+	/* TODO: Better vehicle selector
+	 * Get passenger cargo ID */
 	local list = AICargoList();
 	local passenger_cargo_id = null;
 	for (local i = list.Begin(); !list.IsEnd(); i = list.Next()) {
@@ -104,7 +98,7 @@ function VehicleManager::SelectVehicles()
 	engine_list.Valuate(AIEngine.GetCargoType);
 	engine_list.KeepValue(passenger_cargo_id);
 
-	/* Use newest vehicle (It's what I do) */
+	/* Use newest vehicle */
 	engine_list.Valuate(AIEngine.GetDesignDate);
 	engine_list.Sort(AIList.SORT_BY_VALUE, false);
 	engine = engine_list.Begin();
@@ -157,3 +151,4 @@ function VehicleManager::Debug(string)
 	AILog.Warning(Util.GameDate() + " [Vehicle Manager] DEBUG: " + string + ".");
 	AILog.Warning(Util.GameDate() + " [Vehicle Manager] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
 }
+

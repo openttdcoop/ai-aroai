@@ -32,11 +32,11 @@ require("version.nut");
 class AroAI extends AIController
 {
 	/* Declare constants */
-	AI_VERSION = _major_ver + "." + _minor_ver + "." + _repos_ver;
+	AI_VERSION = _major_ver + "." + _minor_ver + "." + _repos_ver; ///< AI version string for debug messages
 
-	AUTO_RENEW_MONEY = 0;		///< Amount of money to have before starting autorenew
-	AUTO_RENEW_MONTHS = -6;		///< Before/after max age of a vehicle to autorenew
-	MANAGE_ONLY_SLEEP_TIME = 1000;	///< Time sleeping when managing only
+	AUTO_RENEW_MONEY = 0;          ///< Amount of money to have before starting autorenew
+	AUTO_RENEW_MONTHS = -6;	       ///< Before/after max age of a vehicle to autorenew
+	MANAGE_ONLY_SLEEP_TIME = 1000; ///< Time sleeping when managing only
 
 	/* Declare variables */
 	loaded = null;
@@ -175,11 +175,11 @@ function AroAI::SetCompany()
 function AroAI::GetVersionsAndStuff()
 {
 	Info("AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
-	Info("Special thanks to those who helped with the many problems had when making the AI")
-	local version = GetVersion();
+	Info("Special thanks to those who helped with the many problems had when making the AI");
+	local version = this.GetVersion();
 	Info("Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
-		((version & (15 << 24)) >> 24) + "." + ((version & (15 << 20)) >> 20) + "" + 
-		(((version & (1 << 19)) >> 19)?" stable release, ":" r") + ((version & ((1 << 18) - 1))));
+	    ((version & (15 << 24)) >> 24) + "." + ((version & (15 << 20)) >> 20) + "" + 
+	    (((version & (1 << 19)) >> 19)?" stable release, ":" r") + ((version & ((1 << 18) - 1))));
 	AILog.Info("=======================================")
 }
 
@@ -238,3 +238,4 @@ function AroAI::Debug(string)
 	AILog.Warning(Util.GameDate() + " [AroAI] DEBUG: " + string + ".");
 	AILog.Warning(Util.GameDate() + " [AroAI] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
 }
+
