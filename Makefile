@@ -54,6 +54,7 @@ bundle_tar:
 	$(_V) echo "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
 	$(_V) echo "_repos_ver  <- $(REPO_REVISION);" >> $(VER_FILE)
 	$(_V) tar -cf $(TAR_FILENAME) $(BUNDLE_NAME)
+	$(_V) rm -r -f $(BUNDLE_NAME)
 
 clean:
 	$(_E) "[Clean]"
