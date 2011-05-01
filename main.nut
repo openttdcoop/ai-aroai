@@ -107,55 +107,30 @@ function AroAI::Load(version, data)
 }
 
 function AroAI::SetCompany()
-{ //TODO: More names, just to make sure it's always unique
-	local a = AIBase.RandRange(15);
-	switch (a) {
-		case 0:
-			AICompany.SetName("Arioa International");
-			break;
-		case 1:
-			AICompany.SetName("AroAI");
-			break;
-		case 2:
-			AICompany.SetName("Aro Transport");
-			break;
-		case 3:
-			AICompany.SetName("Aro & Co.");
-			break;
-		case 4:
-			AICompany.SetName("Aro");
-			break;
-		case 5:
-			AICompany.SetName("Aro Distribution");
-			break;
-		case 6:
-			AICompany.SetName("Aro Logistics");
-			break;
-		case 7:
-			AICompany.SetName("Aro Federal Delivery");
-			break;
-		case 8:
-			AICompany.SetName("Aro Ltd.");
-			break;
-		case 9:
-			AICompany.SetName("Aro Delivery");
-			break;
-		case 10:
-			AICompany.SetName("Aro Network");
-			break;
-		case 11:
-			AICompany.SetName("Aro Trans");
-			break;
-		case 12:
-			AICompany.SetName("Aro Services");
-			break;
-		case 13:
-			AICompany.SetName("Aro Management");
-			break;
-		case 14:
-			AICompany.SetName("Aro Constructions");
-			break;
-	}
+{
+	/* TODO: More names */
+	local companynames = [
+		"AroAI",
+		"Aro",
+		"Aro & Co.",
+		"Aro Inc.",
+		"Aro Ltd.",
+		"Aro International",
+		"Arioa International",
+		"Aro Transport",
+		"Aro Distribution",
+		"Aro Logistics",
+		//"Aro Federal Delivery",
+		//"Aro Delivery",
+		"Aro Network",
+		"Aro Trans",
+		"Aro Services",
+		"Aro Management",
+		//"Aro Constructions",
+		"" // Empty so it is easier to update
+		];
+	local a = companynames[AIBase.RandRange(companynames.len() - 1)];
+	AICompany.SetName(a);
 	Info(AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
 	
 	if(AICompany.GetPresidentGender(AICompany.COMPANY_SELF) == 0) {
