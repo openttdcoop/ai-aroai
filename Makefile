@@ -42,13 +42,10 @@ all: bundle_tar
 
 bundle_tar:
 	$(_E) "[TAR]"
-	$(_V) sed -e "s/$(REPO_REVISION_DUMMY)/$(REPO_REVISION)/" -e "s/$(VERSION_STRING_DUMMY)/$(VERSION_STRING)/" readme.ptxt > readme.txt
-	$(_V) cp changelog.ptxt changelog.txt
-	$(_V) $(shell $(HG) archive -X glob:.* -X path:Makefile $(BUNDLE_NAME))
-	$(_V) cp changelog.txt $(BUNDLE_NAME)/changelog.txt
-	$(_V) cp readme.txt $(BUNDLE_NAME)/readme.txt
-	$(_V) rm $(BUNDLE_NAME)/readme.ptxt
-	$(_V) rm $(BUNDLE_NAME)/changelog.ptxt
+	$(_V) sed -e "s/$(REPO_REVISION_DUMMY)/$(REPO_REVISION)/" \
+	          -e "s/$(VERSION_STRING_DUMMY)/$(VERSION_STRING)/" readme.ptxt > $(BUNDLE_NAME)/readme.txt
+	$(_V) cp changelog.ptxt $(BUNDLE_NAME)/changelog.txt
+	$(_V) $(shell $(HG) archive -X glob:.* -X path:Makefile -X path:readme.ptxt -X path:changelog.ptxt $(BUNDLE_NAME))
 	$(_V) echo "/* version.nut - $(shell date -u) */" > $(VER_FILE)
 	$(_V) echo "_major_ver  <- $(MA_VERSION);" >> $(VER_FILE)
 	$(_V) echo "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
