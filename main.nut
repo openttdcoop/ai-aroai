@@ -47,7 +47,7 @@ class AroAI extends AIController
 		VehicleManager = VehicleManager();
 		Manager = Manager();
 		Util = Util();
-		
+
 		/* Initialise variables */
 		loaded = false;
 	}

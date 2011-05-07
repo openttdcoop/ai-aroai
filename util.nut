@@ -17,6 +17,7 @@
 
 class Util
 {
+	/* Declare constants */
 	DATE_2_DIGITS = 10; ///< Make sure the date always has 2 digits
 }
 

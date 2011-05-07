@@ -27,9 +27,17 @@ class Builder_BusRoute
 	townList = null;
 	town_a = null;
 	town_b = null;
-	numToRemove = 1;
-	manageOnly = false;
-	stopMoneyDebug = 0;
+	numToRemove = null;
+	manageOnly = null;
+	stopMoneyDebug = null;
+
+	constructor()
+	{
+		/* Initialise variables */
+		numToRemove = 1;
+		manageOnly = false;
+		stopMoneyDebug = 0;
+	}
 }
 
 function Builder_BusRoute::Main()

@@ -15,10 +15,18 @@
  */
 
 class VehicleManager
-{	
+{
+	/* Declare constants */
 	NUM_VEHICLES_PER_ROUTE = 5; ///< Number of vehicles to build per route
-	
-	engine = -1;
+
+	/* Declare variables */
+	engine = null;
+
+	constructor()
+	{
+		/* Initialise variables */
+		engine = -1;
+	}
 }
 
 function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)

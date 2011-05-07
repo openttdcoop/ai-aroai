@@ -17,6 +17,7 @@
 
 class Manager
 {
+	/* Declare constants */
 	LOAN_REDUCE_TO = 0;                ///< Amount of money to reduce loan to
 	MONEY_BEFORE_LOAN_REDUCE = 750000; ///< Amount of money to have before reducing loan
 }
