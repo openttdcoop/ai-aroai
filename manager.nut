@@ -69,6 +69,7 @@ function Manager::ManageEvents()
 				local eng = AIEventEngineAvailable.Convert(event).GetEngineID();
 				local engname = AIEngine.GetName(eng);
 				Info("New engine available: " + engname);
+				VehicleManager.ProcessNewEngine(eng);
 				break;
 			case AIEvent.AI_ET_ENGINE_PREVIEW:
 				AIEventEnginePreview.Convert(event).AcceptPreview();

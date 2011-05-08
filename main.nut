@@ -60,6 +60,7 @@ function AroAI::Start()
 		GetVersionsAndStuff();
 		SetCompany();
 	}
+	VehicleManager.InitCargoTransportEngineIds();
 	/* Keep running. If Start() exits, the AI dies */
 	for(;;) {
 		this.Sleep(1);
