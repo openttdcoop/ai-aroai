@@ -163,7 +163,7 @@ function AroAI::BuildHQ() //From Rondje
 {
 	if (AIMap.IsValidTile(AICompany.GetCompanyHQ(AICompany.COMPANY_SELF))) return; //From SimpleAI
 
-	/* Find SECOND biggest town for HQ, just to be different */
+	/* Find _second_ biggest _city_ for HQ, just to be different */
 	local towns = AITownList();
 	local HQtown = 0;
 	towns.Valuate(AITown.GetPopulation);
@@ -171,8 +171,14 @@ function AroAI::BuildHQ() //From Rondje
 	if (towns.Count == 1) {
 		HQtown = towns.Begin();
 	} else {
-		towns.RemoveTop(1);
-		HQtown = towns.Begin();
+		towns.Valuate(AITown.IsCity);
+		towns.KeepValue(1);
+		if (towns.Count == 1) {
+			HQtown = towns.Begin();
+		} else {
+			towns.RemoveTop(1);
+			HQtown = towns.Begin();
+		}
 	}
 
 	/* Find empty 2x2 square as close to town centre as possible */
