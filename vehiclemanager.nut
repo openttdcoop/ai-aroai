@@ -187,7 +187,7 @@ function VehicleManager::ProcessNewEngine(engineID)
 	}
 
 	/* If a train engine has been replaced, check if there are new wagons to accompany them. */
-/*	if (updateWagons) {
+	if (updateWagons) {
 		for (local cargo = cargo_list.Begin(); !cargo_list.IsEnd(); cargo = cargo_list.Next()) {
 
 			local transportEngineID = cargoTransportEngineIds[AIVehicle.VT_RAIL][cargo];
@@ -204,7 +204,7 @@ function VehicleManager::ProcessNewEngine(engineID)
 
 			for (local wagon = newWagons.Begin(); !newWagons.IsEnd(); wagon = newWagons.Next()) ProcessNewEngine(wagon);
 		}
-	} */
+	}
 	return engineReplaced;
 }
 
