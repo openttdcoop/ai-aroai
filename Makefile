@@ -27,6 +27,7 @@ VERSION_STRING := $(shell [ -n "$(REPO_TAGS)" ] && echo $(REPO_TAGS) || echo $(M
 BUNDLE_NAME    := $(FILENAME)-$(VERSION_STRING)
 VER_FILE       := $(BUNDLE_NAME)/version.nut
 TAR_FILENAME   := $(BUNDLE_NAME).tar
+DATE_STRING    := $(shell date -u +%Y-%m-%d)
 # End of configuration
 
 _E             := @echo
@@ -47,6 +48,7 @@ bundle_tar:
 	$(_V) echo "_major_ver  <- $(MA_VERSION);" >> $(VER_FILE)
 	$(_V) echo "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
 	$(_V) echo "_repos_ver  <- $(REPO_REVISION);" >> $(VER_FILE)
+	$(_V) echo "_date_str   <- \"$(DATE_STRING)\";" >> $(VER_FILE)
 	$(_V) tar -cf $(TAR_FILENAME) $(BUNDLE_NAME)
 	$(_V) rm -r -f $(BUNDLE_NAME)
 
@@ -59,6 +61,7 @@ clean:
 
 test:
 	$(_E) "HG:                           $(HG)"
+	$(_E) "Current date:                 $(DATE_STRING)"
 	$(_E) "Last Tag:                     $(REPO_LAST_TAG)"
 	$(_E) "Major Version:                $(MA_VERSION)"
 	$(_E) "Minor Version:                $(MI_VERSION)"
