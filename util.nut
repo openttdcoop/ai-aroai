@@ -14,6 +14,38 @@ class Util
 	DATE_2_DIGITS = 10; ///< Make sure the date always has 2 digits
 }
 
+function Util::Debug(debug_level, classname, string, fullstop = true)
+{
+	local fullstopstr = ".";
+	if (fullstop = false) fullstopstr = "";
+
+	local classnamestr = [
+		"AroAI",
+		"Bus Route Builder",
+		"Manager",
+		"Vehicle Manager",
+		""
+		];
+
+	switch (debug_level) {
+		case 0: //Info
+			AILog.Info(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
+			break;
+		case 1: //Warning
+			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
+			break;
+		case 2: //Error
+			AILog.Error(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
+			break;
+		case 3: //Debug
+		default:
+			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
+			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
+			break;
+	}
+			
+}
+
 function Util::GameDate()
 {
 	local date = AIDate.GetCurrentDate();
