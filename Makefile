@@ -44,11 +44,11 @@ bundle:
 	          -e "s/$(VERSION_STRING_DUMMY)/$(VERSION_STRING)/" readme.ptxt > $(BUNDLE_NAME)/readme.txt
 	$(_V) cp changelog.ptxt $(BUNDLE_NAME)/changelog.txt
 	$(_V) $(shell $(HG) archive -X glob:.* -X path:Makefile -X path:readme.ptxt -X path:changelog.ptxt $(BUNDLE_NAME))
-	$(_V) echo "/* version.nut - $(shell date -u) */" > $(VER_FILE)
-	$(_V) echo "_major_ver  <- $(MA_VERSION);" >> $(VER_FILE)
-	$(_V) echo "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
-	$(_V) echo "_repos_ver  <- $(REPO_REVISION);" >> $(VER_FILE)
-	$(_V) echo "_date_str   <- \"$(DATE_STRING)\";" >> $(VER_FILE)
+	$(_E) "/* version.nut - $(shell date -u) */" > $(VER_FILE)
+	$(_E) "_major_ver  <- $(MA_VERSION);" >> $(VER_FILE)
+	$(_E) "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
+	$(_E) "_repos_ver  <- $(REPO_REVISION);" >> $(VER_FILE)
+	$(_E) "_date_str   <- \"$(DATE_STRING)\";" >> $(VER_FILE)
 
 bundle_tar: bundle
 	$(_E) "[TAR]"
