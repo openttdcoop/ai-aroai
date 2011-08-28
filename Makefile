@@ -40,10 +40,14 @@ all: bundle_tar
 
 bundle:
 	$(_E) "[BUNDLE]"
+	$(_V) rm -rf $(BUNDLE_NAME)
+	$(_V) mkdir $(BUNDLE_NAME)
 	$(_V) sed -e "s/$(REPO_REVISION_DUMMY)/$(REPO_REVISION)/" \
-	          -e "s/$(VERSION_STRING_DUMMY)/$(VERSION_STRING)/" readme.ptxt > $(BUNDLE_NAME)/readme.txt
-	$(_V) cp changelog.ptxt $(BUNDLE_NAME)/changelog.txt
-	$(_V) $(shell $(HG) archive -X glob:.* -X path:Makefile -X path:readme.ptxt -X path:changelog.ptxt $(BUNDLE_NAME))
+	          -e "s/$(VERSION_STRING_DUMMY)/$(VERSION_STRING)/" readme.ptxt > readme.txt
+	$(_V) cp changelog.ptxt changelog.txt
+	$(_V) cp *.nut $(BUNDLE_NAME)/
+	$(_V) cp *.txt $(BUNDLE_NAME)/
+	$(_V) cp COPYING $(BUNDLE_NAME)/
 	$(_E) "/* version.nut - $(shell date -u) */" > $(VER_FILE)
 	$(_E) "_major_ver  <- $(MA_VERSION);" >> $(VER_FILE)
 	$(_E) "_minor_ver  <- $(MI_VERSION);" >> $(VER_FILE)
@@ -53,7 +57,7 @@ bundle:
 bundle_tar: bundle
 	$(_E) "[TAR]"
 	$(_V) tar -cf $(TAR_FILENAME) $(BUNDLE_NAME)
-	$(_V) rm -r -f $(BUNDLE_NAME)
+	$(_V) rm -rf $(BUNDLE_NAME)
 
 clean:
 	$(_E) "[CLEAN]"
