@@ -61,10 +61,10 @@ bundle_tar: bundle
 
 clean:
 	$(_E) "[CLEAN]"
-	$(_V) -rm -r -f $(BUNDLE_NAME)
-	$(_V) -rm -r -f $(TAR_FILENAME)
-	$(_V) -rm -f readme.txt
-	$(_V) -rm -f changelog.txt
+	$(_V) rm -rf $(BUNDLE_NAME)
+	$(_V) rm -rf $(TAR_FILENAME)
+	$(_V) rm -f readme.txt
+	$(_V) rm -f changelog.txt
 
 test:
 	$(_E) "HG:                           $(HG)"
