@@ -58,7 +58,7 @@ function AroAI::Start()
 	/* Keep running. If Start() exits, the AI dies */
 	for(;;) {
 		this.Sleep(1);
-		Warning("Main loop started");
+		Util.Debug(1, 0, "Main loop started");
 		Manager.ManageLoan();
 		Manager.ManageEvents();
 		if (!Builder_BusRoute.manageOnly) {
@@ -67,13 +67,13 @@ function AroAI::Start()
 			vehList.KeepValue(AIVehicle.VT_ROAD);
 			local maxVehs = vehList.Count();
 			if (AIGameSettings.GetValue("vehicle.max_roadveh") <=  maxVehs) {
-				Info("Max amount of road vehicles reached");
+				Util.Debug(0, 0, "Max amount of road vehicles reached");
 				Builder_BusRoute.manageOnly = true;
 			} else {
 				Builder_BusRoute.Main();
 			}
 		} else {
-			Info("Sleeping because there is nothing to build");
+			Util.Debug(0, 0, "Sleeping because there is nothing to build");
 			this.Sleep(MANAGE_ONLY_SLEEP_TIME);
 		}
 	}
@@ -81,10 +81,10 @@ function AroAI::Start()
 
 function AroAI::Stop()
 {
-	Error("Something gone wrong. Clearing all signs");
+	Util.Debug(2, 0, "Something gone wrong. Clearing all signs");
 	Util.ClearAllSigns();
-	Error("Stopped");
-	Warning("(The error is on purpose)");
+	Util.Debug(2, 0, "Stopped");
+	Util.Debug(1, 0, "(The error is on purpose)", false);
 	local crash = 1/0
 }
 
@@ -98,7 +98,7 @@ function AroAI::Save()
 function AroAI::Load(version, data)
 {
 	loaded = true;
-	Warning("Loaded");
+	Util.Debug(1, 0, "Loaded");
 }
 
 function AroAI::SetCompany()
@@ -126,14 +126,14 @@ function AroAI::SetCompany()
 		];
 	local a = companynames[AIBase.RandRange(companynames.len() - 1)];
 	AICompany.SetName(a);
-	Info(AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
+	Util.Debug(0, 0, AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
 	
 	if(AICompany.GetPresidentGender(AICompany.COMPANY_SELF) == 0) {
 		AICompany.SetPresidentName("Lord Aro");
 	} else {
 		AICompany.SetPresidentName("Lady Aro");
 	}
-	Info(AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
+	Util.Debug(0, 0, AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
 	
 	AICompany.SetAutoRenewMonths(AUTO_RENEW_MONTHS);
 	AICompany.SetAutoRenewMoney(AUTO_RENEW_MONEY);
@@ -144,10 +144,10 @@ function AroAI::SetCompany()
 
 function AroAI::GetVersionsAndStuff()
 {
-	Info("AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
-	Info("Special thanks to those who helped with the many problems had when making the AI");
+	Util.Debug(0, 0, "AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
+	Util.Debug(0, 0, "Special thanks to those who helped with the many problems had when making the AI");
 	local version = this.GetVersion();
-	Info("Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
+	Util.Debug(0, 0, "Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
 	    ((version & (15 << 24)) >> 24) + "." + ((version & (15 << 20)) >> 20) + "" + 
 	    (((version & (1 << 19)) >> 19)?" stable release, ":" r") + ((version & ((1 << 18) - 1))));
 	AILog.Info("=======================================")
@@ -187,31 +187,10 @@ function AroAI::BuildHQ() //From Rondje
 	for (local tile = HQArea.Begin(); !HQArea.IsEnd(); tile = HQArea.Next()) {
 		if (AICompany.BuildCompanyHQ(tile)) {
 			AISign.BuildSign(tile, "AroAI HQ");
-			Info("HQ building completed");
+			Util.Debug(0, 0, "HQ building completed");
 			return;
 		}
 	}
-	Warning("No possible HQ location found");
-}
-
-function AroAI::Info(string)
-{
-	AILog.Info(Util.GameDate() + " [AroAI] " + string + ".");
-}
-
-function AroAI::Warning(string)
-{
-	AILog.Warning(Util.GameDate() + " [AroAI] " + string + ".");
-}
-
-function AroAI::Error(string)
-{
-	AILog.Error(Util.GameDate() + " [AroAI] " + string + ".");
-}
-
-function AroAI::Debug(string)
-{
-	AILog.Warning(Util.GameDate() + " [AroAI] DEBUG: " + string + ".");
-	AILog.Warning(Util.GameDate() + " [AroAI] (if you see this, please inform the AI Dev in charge, as it was supposed to be removed before release)");
+	Util.Debug(1, 0, "No possible HQ location found");
 }
 

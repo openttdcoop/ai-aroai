@@ -24,7 +24,7 @@ function Util::Debug(debug_level, classname, string, fullstop = true)
 		"Bus Route Builder",
 		"Manager",
 		"Vehicle Manager",
-		""
+		"END"
 		];
 
 	switch (debug_level) {
