@@ -167,7 +167,10 @@ function AroAI::BuildHQ() //From Rondje
 	} else {
 		towns.Valuate(AITown.IsCity);
 		towns.KeepValue(1);
-		if (towns.Count == 1) {
+		if (towns.Count == 0) {
+			Util.Debug(1, 0, "No possible HQ location found");
+			return;
+		} else if (towns.Count == 1) {
 			HQtown = towns.Begin();
 		} else {
 			towns.RemoveTop(1);
