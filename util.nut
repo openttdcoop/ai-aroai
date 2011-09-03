@@ -28,16 +28,16 @@ function Util::Debug(debug_level, classname, string, fullstop = true)
 		];
 
 	switch (debug_level) {
-		case 0: //Info
+		case 0: // Info
 			AILog.Info(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
 			break;
-		case 1: //Warning
+		case 1: // Warning
 			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
 			break;
-		case 2: //Error
+		case 2: // Error
 			AILog.Error(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
 			break;
-		case 3: //Debug
+		case 3: // Debug
 		default:
 			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
 			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
@@ -61,10 +61,10 @@ function Util::GameDate()
 	return day + "/" + month + "/" + year;
 }
 
-function Util::Sqrt(i) //From Rondje
+function Util::Sqrt(i) // From Rondje
 {
-	if (i == 0) return 0; //Avoid divide by zero
-	local n = (i / 2) + 1; //Initial estimate, never low
+	if (i == 0) return 0; // Avoid divide by zero
+	local n = (i / 2) + 1; // Initial estimate, never low
 	local n1 = (n + (i / n)) / 2;
 	while (n1 < n) {
 		n = n1;

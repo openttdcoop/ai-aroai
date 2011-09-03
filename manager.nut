@@ -19,14 +19,14 @@ function Manager::ManageLoan()
 {
 	/* TODO: Something else...
 	 * ...or maybe not; it's all I ever do with my loan */
-	if (AICompany.GetLoanAmount() == LOAN_REDUCE_TO) return; //Loan already been reduced to 0
+	if (AICompany.GetLoanAmount() == LOAN_REDUCE_TO) return; // Loan already been reduced to 0
 	Util.Debug(0, 2, "Managing loan");
 	if (AICompany.GetBankBalance(AICompany.COMPANY_SELF) >= MONEY_BEFORE_LOAN_REDUCE) {
 		Util.Debug(0, 2, "The company now has more than £" + MONEY_BEFORE_LOAN_REDUCE + ". Reducing Loan to minimum");
 		AICompany.SetLoanAmount(LOAN_REDUCE_TO);
 		return;
 	}
-	AICompany.SetLoanAmount(AICompany.GetMaxLoanAmount()); //Why not?
+	AICompany.SetLoanAmount(AICompany.GetMaxLoanAmount()); // Why not?
 }
 
 function Manager::ManageEvents()
@@ -95,7 +95,7 @@ function Manager::ManageEvents()
 			case AIEvent.AI_ET_DISASTER_ZEPPELINER_CLEARED:
 				break;
 			/* These are unhandled (and will be handled in future) */
-			case AIEvent.AI_ET_COMPANY_ASK_MERGER: //TODO: Deal with it depending on amount of money
+			case AIEvent.AI_ET_COMPANY_ASK_MERGER: // TODO: Deal with it depending on amount of money
 			default:
 				Util.Debug(1, 2, "Event is unhandled");
 				break;
@@ -106,8 +106,8 @@ function Manager::ManageEvents()
 	}
 }
 
-function Manager::GetEventName(event) //OUT OF USE FOR NOW
-{//TODO: Switch round the debug: display when event is unhandled
+function Manager::GetEventName(event) // OUT OF USE FOR NOW
+{// TODO: Switch round the debug: display when event is unhandled
 	/* No function to get the name of events, so:
 	 * False return cases are silent ignores*/
 	switch (event) {

@@ -139,21 +139,21 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 			if (AIMap.DistanceManhattan(path.GetTile(), par.GetTile()) == 1) {
 				if (!AIRoad.BuildRoad(path.GetTile(), par.GetTile())) {
 					local dwbre = this.DealWithBuildRouteErrors(AIError.GetLastError());
-					if (dwbre == 2) { //Not enough money
+					if (dwbre == 2) { // Not enough money
 						while (!AIRoad.BuildRoad(path.GetTile(), par.GetTile()));
 					}
-					if (dwbre == 3) { //Area not clear
+					if (dwbre == 3) { // Area not clear
 						local sign = AISign.BuildSign(path.GetTile(), "Clearing tile");
 						/* Demolish and retry */
 						AITile.DemolishTile(path.GetTile())
 						if (!AIRoad.BuildRoad(path.GetTile(), par.GetTile())) return null;
 						AISign.RemoveSign(sign);
 					}
-					if (dwbre == 4) { //Vehicle in the way
+					if (dwbre == 4) { // Vehicle in the way
 						/* Keep trying until vehicle moved */
 						while (!AIRoad.BuildRoad(path.GetTile(), par.GetTile()));
 					}
-					if (dwbre == null) { //Unknown + land sloped wrong + one-way junction
+					if (dwbre == null) { // Unknown + land sloped wrong + one-way junction
 						AISign.BuildSign(path.GetTile(), AIError.GetLastErrorString());
 						return null;
 					}
@@ -224,14 +224,14 @@ function Builder_BusRoute::BuildBusStop(town)
 									if (AIRoad.IsDriveThroughRoadStationTile(station)) continue;
 									AIController.Sleep(SLEEP_TIME_MONEY);
 								}
-								if (!AIRoad.BuildDriveThroughRoadStation(station, opening, AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_JOIN_ADJACENT)) return null; //TODO: handle errors again
+								if (!AIRoad.BuildDriveThroughRoadStation(station, opening, AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_JOIN_ADJACENT)) return null; // TODO: handle errors again
 								break;
 							case AIRoad.ERR_ROAD_CANNOT_BUILD_ON_TOWN_ROAD:
 								Util.Debug(0, 1, "Building on town roads disabled. Building a bus station instead");
 								station = BuildRVStation(town, "station");
 								if (station == null) return null;
 								else return station;
-							case AIError.ERR_VEHICLE_IN_THE_WAY: //TODO: handle it
+							case AIError.ERR_VEHICLE_IN_THE_WAY: // TODO: handle it
 							default:
 								Util.Debug(1, 1, "Unhandled error building bus stop: " + AIError.GetLastErrorString() + " Trying again");
 								continue;
@@ -287,26 +287,26 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 				if (buildFront) {
 					if (!AIRoad.BuildRoad(buildTile, buildFront)) {
 						switch (AIError.GetLastError()) {
-							case AIError.ERR_NOT_ENOUGH_CASH: //Wait for more money
+							case AIError.ERR_NOT_ENOUGH_CASH: // Wait for more money
 								Util.Debug(1, 1, "Not enough money to build road for bus " + type + ". Waiting for more");
 								while (AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIRoad.GetBuildCost(AIRoad.ROADTYPE_ROAD, AIRoad.BT_ROAD)) {
 									if (!AITile.IsBuildable(buildTile)) continue;
 									AIController.Sleep(SLEEP_TIME_MONEY);
 								}
-								if (!AIRoad.BuildRoad(buildTile, buildFront)) return null; //TODO: Handle errors again
+								if (!AIRoad.BuildRoad(buildTile, buildFront)) return null; // TODO: Handle errors again
 								break;
-							case AIError.ERR_VEHICLE_IN_THE_WAY: //Wait for vehicle to get out of the way
+							case AIError.ERR_VEHICLE_IN_THE_WAY: // Wait for vehicle to get out of the way
 								while (!AIRoad.BuildRoad(buildTile, buildFront)) {
 									if (!AITile.IsBuildable(buildTile)) continue;
 									AIController.Sleep(SLEEP_TIME_VEHICLE);
 								}
 								break;
-							case AIError.ERR_ALREADY_BUILT: //Probably too much road, but build depot anyway TODO: Check I'm right
+							case AIError.ERR_ALREADY_BUILT: // Probably too much road, but build depot anyway TODO: Check I'm right
 							break;
-							case AIError.ERR_LAND_SLOPED_WRONG: //TODO: Handle it, give up for now
-							case AIError.ERR_AREA_NOT_CLEAR: //TODO: Handle it, give up for now
-							case AIRoad.ERR_ROAD_ONE_WAY_ROADS_CANNOT_HAVE_JUNCTIONS: //Can't happen? Just give up
-							case AIRoad.ERR_ROAD_WORKS_IN_PROGRESS: //Just give up
+							case AIError.ERR_LAND_SLOPED_WRONG: // TODO: Handle it, give up for now
+							case AIError.ERR_AREA_NOT_CLEAR: // TODO: Handle it, give up for now
+							case AIRoad.ERR_ROAD_ONE_WAY_ROADS_CANNOT_HAVE_JUNCTIONS: // Can't happen? Just give up
+							case AIRoad.ERR_ROAD_WORKS_IN_PROGRESS: // Just give up
 							default:
 								Util.Debug(1, 1, "Unhandled error while building bus " + type + ": " + AIError.GetLastErrorString() + ". Trying again");
 								continue;
@@ -325,11 +325,11 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 									if (!AITile.IsBuildable(buildTile)) continue;
 									AIController.Sleep(SLEEP_TIME_MONEY);
 								}
-								if (type == "depot" && !AIRoad.BuildRoadDepot(buildTile, buildFront)) return null; //TODO: handle errors again
-								else if (type == "station" && !AIRoad.BuildRoadStation(buildTile, buildFront, AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_JOIN_ADJACENT)) return null; //TODO: handle errors again
+								if (type == "depot" && !AIRoad.BuildRoadDepot(buildTile, buildFront)) return null; // TODO: handle errors again
+								else if (type == "station" && !AIRoad.BuildRoadStation(buildTile, buildFront, AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_JOIN_ADJACENT)) return null; // TODO: handle errors again
 								break;
 							case AIError.ERR_FLAT_LAND_REQUIRED:
-							case AIError.ERR_AREA_NOT_CLEAR: //TODO: Handle them, for now just give up and try somewhere else
+							case AIError.ERR_AREA_NOT_CLEAR: // TODO: Handle them, for now just give up and try somewhere else
 							default:
 								Util.Debug(1, 1, "Unhandled error while building bus " + type + ": " + AIError.GetLastErrorString() + ". Trying again");
 								continue;
@@ -350,7 +350,7 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 	return null;
 }
 
-function Builder_BusRoute::getRoadTile(tile) //From OTVI
+function Builder_BusRoute::getRoadTile(tile) // From OTVI
 {
 	local adjacent = AITileList();
 	adjacent.AddTile(tile - AIMap.GetTileIndex(1,0));
@@ -373,18 +373,18 @@ function Builder_BusRoute::DealWithBuildRouteErrors(err)
 		case AIError.ERR_VEHICLE_IN_THE_WAY:
 			Util.Debug(1, 1, "Building road failed temporarily - vehicle in the way");
 			return 4;
-		case AIError.ERR_ALREADY_BUILT: return 1; //Someone else already built this - silent ignore
+		case AIError.ERR_ALREADY_BUILT: return 1; // Someone else already built this - silent ignore
 		case AIError.ERR_AREA_NOT_CLEAR:
 			Util.Debug(1, 1, "Building road failed: not clear, demolishing tile..");
 			return 3;
 		case AIError.ERR_NOT_ENOUGH_CASH:
-			if (stopMoneyDebug == 10) { //Only display debug every ten times
+			if (stopMoneyDebug == 10) { // Only display debug every ten times
 				Util.Debug(1, 1, "Not enough money to build road. Waiting for more");
 				stopMoneyDebug = 0;
 			}
 			stopMoneyDebug++;
 			return 2;
-		case AIError.ERR_LAND_SLOPED_WRONG: //TODO: Terraform
+		case AIError.ERR_LAND_SLOPED_WRONG: // TODO: Terraform
 		case AIRoad.ERR_ROAD_ONE_WAY_ROADS_CANNOT_HAVE_JUNCTIONS:
 		case AIRoad.ERR_ROAD_WORKS_IN_PROGRESS:
 		default:

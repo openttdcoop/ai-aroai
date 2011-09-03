@@ -90,7 +90,7 @@ function AroAI::Stop()
 
 function AroAI::Save()
 {
-	//TODO: Add save data to the table...maybe
+	// TODO: Add save data to the table...maybe
 	local table = {};
 	return table;
 }
@@ -153,9 +153,9 @@ function AroAI::GetVersionsAndStuff()
 	AILog.Info("=======================================")
 }
 
-function AroAI::BuildHQ() //From Rondje
+function AroAI::BuildHQ() // From Rondje
 {
-	if (AIMap.IsValidTile(AICompany.GetCompanyHQ(AICompany.COMPANY_SELF))) return; //From SimpleAI
+	if (AIMap.IsValidTile(AICompany.GetCompanyHQ(AICompany.COMPANY_SELF))) return; // From SimpleAI
 
 	/* Find _second_ biggest _city_ for HQ, just to be different */
 	local towns = AITownList();

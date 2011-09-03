@@ -64,7 +64,7 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 		/* TODO: Get rid of failed vehicle(s) */
 		return null;
 	}
-	AIVehicle.StartStopVehicle(vehicle_id); //Start vehicle
+	AIVehicle.StartStopVehicle(vehicle_id); // Start vehicle
 	local c = 2;
 	while (c <= NUM_VEHICLES_PER_ROUTE) {
 		local builtVehicle_id = vehicle_id;
@@ -79,9 +79,9 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 				vehicle_id = AIVehicle.CloneVehicle(depot_tile, builtVehicle_id, true);
 			}
 		}
-		AIVehicle.StartStopVehicle(vehicle_id); //Start cloned vehicle
+		AIVehicle.StartStopVehicle(vehicle_id); // Start cloned vehicle
 		Util.Debug(0, 3, c + "/" + NUM_VEHICLES_PER_ROUTE + " buses built");
-		c++; //Funny!
+		c++; // Funny!
 	}
 	Util.Debug(0, 3, "Buses successfully bought");
 	/* TODO: Test return value without the return */
