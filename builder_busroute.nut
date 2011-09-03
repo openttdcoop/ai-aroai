@@ -16,7 +16,7 @@ class Builder_BusRoute
 	SLEEP_TIME_MONEY = 50;       ///< How long to sleep when not enough money
 	SLEEP_TIME_VEHICLE = 10;     ///< How long to sleep when vehicle is in the way
 
-	/* Declare variables */	
+	/* Declare variables */
 	townList = null;
 	town_a = null;
 	town_b = null;
@@ -52,16 +52,16 @@ function Builder_BusRoute::Main()
 
 	local depot_tile_a = BuildRVStation(town_a, "depot");
 	if (depot_tile_a == null) return;
-		
+
 	town = town_b;
 	local busStation_b = BuildBusStop(town);
 	if (busStation_b == null) return;
-		
+
 	local depot_tile_b = BuildRVStation(town_b, "depot");
 	if (depot_tile_b == null) return;
-	
+
 	if (VehicleManager.BuildBusEngines(depot_tile_a, busStation_a, busStation_b) == null) return;
-	
+
 	/* Never mind if this fails, there are five buses on the route already */
 	VehicleManager.BuildBusEngines(depot_tile_b, busStation_b, busStation_a);
 }
@@ -199,7 +199,7 @@ function Builder_BusRoute::BuildBusStop(town)
 	local range = 1;
 	local max_range = Util.Sqrt(AITown.GetPopulation(town)/100) + 2;
 	local area = AITileList();
-		
+
 	while (range < max_range) {
 		area.AddRectangle(AITown.GetLocation(town) - AIMap.GetTileIndex(range, range), AITown.GetLocation(town) + AIMap.GetTileIndex(range, range));
 		area.Valuate(AIRoad.IsRoadTile);
@@ -276,7 +276,7 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 	local range = 1;
 	local area = AITileList();
 	local townLocation = AITown.GetLocation(townid);
-	
+
 	while (range < 15) {
 		area.AddRectangle(townLocation - AIMap.GetTileIndex(range, range), townLocation + AIMap.GetTileIndex(range, range));
 		area.Valuate(AITile.IsBuildable);

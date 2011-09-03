@@ -127,18 +127,18 @@ function AroAI::SetCompany()
 	local a = companynames[AIBase.RandRange(companynames.len() - 1)];
 	AICompany.SetName(a);
 	Util.Debug(0, 0, AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
-	
+
 	if(AICompany.GetPresidentGender(AICompany.COMPANY_SELF) == 0) {
 		AICompany.SetPresidentName("Lord Aro");
 	} else {
 		AICompany.SetPresidentName("Lady Aro");
 	}
 	Util.Debug(0, 0, AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
-	
+
 	AICompany.SetAutoRenewMonths(AUTO_RENEW_MONTHS);
 	AICompany.SetAutoRenewMoney(AUTO_RENEW_MONEY);
 	AICompany.SetAutoRenewStatus(true);
-	
+
 	BuildHQ();
 }
 
@@ -148,7 +148,7 @@ function AroAI::GetVersionsAndStuff()
 	Util.Debug(0, 0, "Special thanks to those who helped with the many problems had when making the AI");
 	local version = this.GetVersion();
 	Util.Debug(0, 0, "Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
-	    ((version & (15 << 24)) >> 24) + "." + ((version & (15 << 20)) >> 20) + "" + 
+	    ((version & (15 << 24)) >> 24) + "." + ((version & (15 << 20)) >> 20) + "" +
 	    (((version & (1 << 19)) >> 19)?" stable release, ":" r") + ((version & ((1 << 18) - 1))));
 	AILog.Info("=======================================")
 }

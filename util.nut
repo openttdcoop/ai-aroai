@@ -43,7 +43,7 @@ function Util::Debug(debug_level, classname, string, fullstop = true)
 			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
 			break;
 	}
-			
+
 }
 
 function Util::GameDate()
@@ -63,7 +63,7 @@ function Util::GameDate()
 
 function Util::Sqrt(i) //From Rondje
 {
-	if (i == 0) return 0; //Avoid divide by zero	
+	if (i == 0) return 0; //Avoid divide by zero
 	local n = (i / 2) + 1; //Initial estimate, never low
 	local n1 = (n + (i / n)) / 2;
 	while (n1 < n) {

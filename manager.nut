@@ -108,7 +108,7 @@ function Manager::ManageEvents()
 
 function Manager::GetEventName(event) //OUT OF USE FOR NOW
 {//TODO: Switch round the debug: display when event is unhandled
-	/* No function to get the name of events, so: 
+	/* No function to get the name of events, so:
 	 * False return cases are silent ignores*/
 	switch (event) {
 		case AIEvent.AI_ET_INVALID:			return "AI_ET_INVALID";

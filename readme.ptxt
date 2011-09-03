@@ -72,7 +72,7 @@ test:
 help:
 	This displays the Makefile help, showing an even briefer overview
 	of all make targets, along with the AI version itself.
-	
+
 
 
 3.1 Obtaining the source
@@ -104,17 +104,17 @@ Also on the thanks list are:
 		- Steffl;
 		- Dustin;
 		- Kogut;
-		
+
 	* Those who I nicked bits of their AI from:
 		- Maninthebox - OTVI, Rondje om de Kerk;
 		- Team Rocket - RocketAI;
-		
+
 	* Those who I nicked bits of their AI AND they helped me out:
 		- Xander - JAMI;
 		- fanioz - Trans;
 		- Brumi - SimpleAI;
 		- Zuu - SuperLib;
-		
+
 	* and finally orudge, for his wonderful forums;
 
 
