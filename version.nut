@@ -5,3 +5,4 @@
 _major_ver <- $FF;
 _minor_ver <- $FF;
 _repos_ver <- $FFFF;
+_date_str  <- "1970-1-1";
