@@ -8,6 +8,8 @@
  * See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with OpenTTD. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file builder_busroute.nut Handles building of bus routes. */
+
 class Builder_BusRoute
 {
 	/* Declare constants */
@@ -33,6 +35,10 @@ class Builder_BusRoute
 	}
 }
 
+/**
+ * Main loop for building buses.
+ * @todo Remove failed bus stops.
+ */
 function Builder_BusRoute::Main()
 {
 	Util.Debug(0, 1, "Planning on building bus route");
@@ -41,7 +47,7 @@ function Builder_BusRoute::Main()
 		Util.Debug(2, 1, "PLEASE RE-ENABLE THEM, THEN RESTART GAME");
 		AroAI.Stop();
 	}
-	/* TODO: Remove failed bus stops */
+
 	if (GetTowns() == null) return;
 
 	if (BuildRoad(town_a, town_b) == null) return;
@@ -66,6 +72,11 @@ function Builder_BusRoute::Main()
 	VehicleManager.BuildBusEngines(depot_tile_b, busStation_b, busStation_a);
 }
 
+/**
+ * Get two towns to build buses in.
+ * @return The two towns to build in, else null.
+ * @todo Improve 'whether town has been built in' check.
+ */
 function Builder_BusRoute::GetTowns()
 {
 	/* Reset variables */
@@ -91,7 +102,7 @@ function Builder_BusRoute::GetTowns()
 	/* Keep towns within certain distance */
 	townList.KeepBelowValue(MAX_TOWN_DISTANCE);
 	townList.Valuate(AITown.GetRating, AICompany.COMPANY_SELF);
-	townList.KeepValue(AITown.TOWN_RATING_NONE);// TODO: Improve
+	townList.KeepValue(AITown.TOWN_RATING_NONE);
 	if (townList.IsEmpty()) {
 		Util.Debug(1, 1, "No serviceable towns within radius of " + AITown.GetName(town_a) + ". Moving to next town");
 		numToRemove++;
@@ -105,6 +116,13 @@ function Builder_BusRoute::GetTowns()
 	return town_a, town_b;
 }
 
+/**
+ * Build road between two towns.
+ * @param town_a Where to begin the road.
+ * @param town_b Where to end the road.
+ * @return If road building was completely successfully, true. Else null.
+ * @todo Handle tunnel/bridge building errors.
+ */
 function Builder_BusRoute::BuildRoad(town_a, town_b)
 {
 	/* Set roadtype */
@@ -192,6 +210,13 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 	return true;
 }
 
+/**
+ * Build a drivethrough bus stop.
+ * @param town The town to build the bus stop in.
+ * @return The tile the station has been built on, else null.
+ * @todo Allow bus stop to only have one entrance/exit?
+ * @todo Handle error if road vehicle is in the way when building.
+ */
 function Builder_BusRoute::BuildBusStop(town)
 {
 	Util.Debug(0, 1, "Building bus stop in " + AITown.GetName(town));
@@ -210,7 +235,7 @@ function Builder_BusRoute::BuildBusStop(town)
 		area.KeepValue(AITile.SLOPE_FLAT);
 		area.Valuate(AIRoad.GetNeighbourRoadCount);
 
-		/* Entrance and exit. TODO: allow 1 as well? */
+		/* Entrance and exit */
 		area.KeepValue(2);
 		if (area.Count()) {
 			for (local station = area.Begin(); !area.IsEnd(); station = area.Next()) {
@@ -231,7 +256,7 @@ function Builder_BusRoute::BuildBusStop(town)
 								station = BuildRVStation(town, "station");
 								if (station == null) return null;
 								else return station;
-							case AIError.ERR_VEHICLE_IN_THE_WAY: // TODO: handle it
+							case AIError.ERR_VEHICLE_IN_THE_WAY:
 							default:
 								Util.Debug(1, 1, "Unhandled error building bus stop: " + AIError.GetLastErrorString() + " Trying again");
 								continue;
@@ -251,6 +276,13 @@ function Builder_BusRoute::BuildBusStop(town)
 	return null;
 }
 
+/**
+ * Build a bus station or road depot.
+ * @param townid The town to build in.
+ * @param type "station" or "depot", depending on what needs building.
+ * @return The tile the structure has been built on, else null.
+ * @todo Handle more errors correctly (ALREADY_BUILT, AREA_NOT_CLEAR, etc).
+ */
 function Builder_BusRoute::BuildRVStation(townid, type)
 {
 	local buildType = null;
@@ -293,7 +325,7 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 									if (!AITile.IsBuildable(buildTile)) continue;
 									AIController.Sleep(SLEEP_TIME_MONEY);
 								}
-								if (!AIRoad.BuildRoad(buildTile, buildFront)) return null; // TODO: Handle errors again
+								if (!AIRoad.BuildRoad(buildTile, buildFront)) return null;
 								break;
 							case AIError.ERR_VEHICLE_IN_THE_WAY: // Wait for vehicle to get out of the way
 								while (!AIRoad.BuildRoad(buildTile, buildFront)) {
@@ -350,7 +382,13 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 	return null;
 }
 
-function Builder_BusRoute::getRoadTile(tile) // From OTVI
+/**
+ * Get free road tiles around a tile.
+ * Originally from OtviAI
+ * @param tile The tile to check around.
+ * @return A list with the tiles in, else null.
+ */
+function Builder_BusRoute::getRoadTile(tile)
 {
 	local adjacent = AITileList();
 	adjacent.AddTile(tile - AIMap.GetTileIndex(1,0));
@@ -367,6 +405,13 @@ function Builder_BusRoute::getRoadTile(tile) // From OTVI
 	else return null;
 }
 
+/**
+ * Deal with errors during building a road.
+ * @param err The error to deal with.
+ * @return A number that corresponds with an error.
+ * @todo Terraform if LAND_SLOPED_WRONG.
+ * @todo Merge function back into BuildRoad().
+ */
 function Builder_BusRoute::DealWithBuildRouteErrors(err)
 {
 	switch (err) {
@@ -384,7 +429,7 @@ function Builder_BusRoute::DealWithBuildRouteErrors(err)
 			}
 			stopMoneyDebug++;
 			return 2;
-		case AIError.ERR_LAND_SLOPED_WRONG: // TODO: Terraform
+		case AIError.ERR_LAND_SLOPED_WRONG:
 		case AIRoad.ERR_ROAD_ONE_WAY_ROADS_CANNOT_HAVE_JUNCTIONS:
 		case AIRoad.ERR_ROAD_WORKS_IN_PROGRESS:
 		default:
