@@ -16,6 +16,8 @@ BEFORE RELEASE CHECK:
 	run makefile
 */
 
+/** @file main.nut Functions related to starting AroAI. */
+
 import("pathfinder.road", "RoadPathFinder", 3);
 require("vehiclemanager.nut");
 require("builder_busroute.nut");
@@ -33,7 +35,7 @@ class AroAI extends AIController
 	MANAGE_ONLY_SLEEP_TIME = 1000; ///< Time sleeping when managing only
 
 	/* Declare variables */
-	loaded = null;
+	loaded = null;                 ///< Is AI loaded?
 
 	constructor()
 	{
@@ -47,6 +49,10 @@ class AroAI extends AIController
 	}
 }
 
+/**
+ * Main AI loop.
+ * Initialises the AI
+ */
 function AroAI::Start()
 {
 	this.Sleep(1);
@@ -79,6 +85,7 @@ function AroAI::Start()
 	}
 }
 
+/** Stop the AI, by forcing it to crash. */
 function AroAI::Stop()
 {
 	Util.Debug(2, 0, "Something gone wrong. Clearing all signs");
@@ -88,22 +95,33 @@ function AroAI::Stop()
 	local crash = 1/0
 }
 
+/**
+ * Save AI things.
+ * Currently just a dummy function (required by API).
+ * @todo Add save data to the table...maybe
+ */
 function AroAI::Save()
 {
-	// TODO: Add save data to the table...maybe
 	local table = {};
 	return table;
 }
 
+/**
+ * Load AI things.
+ * Currrently only sets a flag telling AroAI whether it's loaded or not.
+ */
 function AroAI::Load(version, data)
 {
 	loaded = true;
 	Util.Debug(1, 0, "Loaded");
 }
 
+/**
+ * Set company internals, like name and autorenew.
+ * @todo Add more company names.
+ */
 function AroAI::SetCompany()
 {
-	/* TODO: More names */
 	local companynames = [
 		"AroAI",
 		"Aro",
@@ -142,6 +160,10 @@ function AroAI::SetCompany()
 	BuildHQ();
 }
 
+/**
+ * Some beginning debug text.
+ * OpenTTD version code lifted from Chopper.
+ */
 function AroAI::GetVersionsAndStuff()
 {
 	Util.Debug(0, 0, "AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
@@ -153,9 +175,14 @@ function AroAI::GetVersionsAndStuff()
 	AILog.Info("=======================================")
 }
 
-function AroAI::BuildHQ() // From Rondje
+/**
+ * Build company headquaters.
+ * Function taken from OtviAI, but originally taken from SimpleAI and Rondje om de Kerk.
+ * @todo Fix make-sure-build-in-city hack.
+ */
+function AroAI::BuildHQ()
 {
-	if (AIMap.IsValidTile(AICompany.GetCompanyHQ(AICompany.COMPANY_SELF))) return; // From SimpleAI
+	if (AIMap.IsValidTile(AICompany.GetCompanyHQ(AICompany.COMPANY_SELF))) return;
 
 	/* Find _second_ biggest _city_ for HQ, just to be different */
 	local towns = AITownList();
