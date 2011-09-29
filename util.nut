@@ -8,12 +8,22 @@
  * See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with OpenTTD. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file util.nut Some utility functions, including debugs. */
+
 class Util
 {
 	/* Declare constants */
 	DATE_2_DIGITS = 10; ///< Make sure the date always has 2 digits
 }
 
+/**
+ * Print a debug message to the AI debug window.
+ * @param debug_level The specific debug function to use, e.g. Info or Error.
+ * @param classname Which class anme to output with the debug statement, so you know where the debug has come from.
+ * @param string Specific string to print.
+ * @param fullstop Should a fullstop be printed on the end? Default = true.
+ * @todo Move classnamestr table to global scope.
+ */
 function Util::Debug(debug_level, classname, string, fullstop = true)
 {
 	local fullstopstr = ".";
@@ -46,6 +56,9 @@ function Util::Debug(debug_level, classname, string, fullstop = true)
 
 }
 
+/**
+ * Get the game date, as a string, in the format dd/mm/yyyy.
+ */
 function Util::GameDate()
 {
 	local date = AIDate.GetCurrentDate();
@@ -61,7 +74,14 @@ function Util::GameDate()
 	return day + "/" + month + "/" + year;
 }
 
-function Util::Sqrt(i) // From Rondje
+/**
+ * Simpler Sqrt function.
+ * Originally from Rondje Om De Kerk.
+ * @param i Number to get Sqrt of.
+ * @return Sqrt of \c i.
+ * @todo Check if it is actually needed, and act accordingly.
+ */
+function Util::Sqrt(i)
 {
 	if (i == 0) return 0; // Avoid divide by zero
 	local n = (i / 2) + 1; // Initial estimate, never low
@@ -73,11 +93,13 @@ function Util::Sqrt(i) // From Rondje
 	return n;
 }
 
+/**
+ * Remove all signs from the map
+ */
 function Util::ClearAllSigns()
 {
 	local sign_list = AISignList();
-	for(local i = sign_list.Begin(); !sign_list.IsEnd(); i = sign_list.Next()) {
+	for (local i = sign_list.Begin(); !sign_list.IsEnd(); i = sign_list.Next()) {
 		AISign.RemoveSign(i);
 	}
 }
-
