@@ -48,13 +48,17 @@ More parameters are planned.
 ----------------------
 
 Usually there's not much which needs to be changed when you obtain the
-source. Your friends will usually be 'make bundle_tar'.
+source. Your friends will usually be 'make [bundle_tar]'.
 
 A brief overview over all Makefile targets is given here:
 
 all:
 	This is the default target, if no parameter is given to make. It
 	will simply build the tar file (including the AI).
+
+bundle
+	This will bundle the necessary files into a directory, for fast
+	testing.
 
 bundle_tar
 	This will tar the bundle directory into a tar archive for
@@ -96,26 +100,26 @@ works a lot on maintaining the Development Zone where this repository is
 hosted and who also frequently gives much valuable input.
 Also on the thanks list are:
 	* Those who helped me out:
-		- Yexo;
-		- Michiel;
-		- planetmaker;
-		- Morloth;
 		- Dezmond_snz;
-		- Steffl;
 		- Dustin;
 		- Kogut;
+		- Michiel;
+		- planetmaker;
+		- Steffl;
+		- Yexo;
 
 	* Those who I nicked bits of their AI from:
 		- Maninthebox - OTVI, Rondje om de Kerk;
 		- Team Rocket - RocketAI;
 
 	* Those who I nicked bits of their AI AND they helped me out:
-		- Xander - JAMI;
-		- fanioz - Trans;
 		- Brumi - SimpleAI;
+		- fanioz - Trans;
+		- Morloth - NoCAB;
+		- Xander - JAMI;
 		- Zuu - SuperLib;
 
-	* and finally orudge, for his wonderful forums;
+	* Finally orudge; for his wonderfully helpful forums.
 
 
 
