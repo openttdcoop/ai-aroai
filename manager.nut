@@ -8,6 +8,8 @@
  * See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with OpenTTD. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file manager.nut Manages money and events. */
+
 class Manager
 {
 	/* Declare constants */
@@ -15,10 +17,12 @@ class Manager
 	MONEY_BEFORE_LOAN_REDUCE = 750000; ///< Amount of money to have before reducing loan
 }
 
+/**
+ * Manage AI company loan.
+ * @todo Something else...maybe.
+ */
 function Manager::ManageLoan()
 {
-	/* TODO: Something else...
-	 * ...or maybe not; it's all I ever do with my loan */
 	if (AICompany.GetLoanAmount() == LOAN_REDUCE_TO) return; // Loan already been reduced to 0
 	Util.Debug(0, 2, "Managing loan");
 	if (AICompany.GetBankBalance(AICompany.COMPANY_SELF) >= MONEY_BEFORE_LOAN_REDUCE) {
@@ -29,6 +33,11 @@ function Manager::ManageLoan()
 	AICompany.SetLoanAmount(AICompany.GetMaxLoanAmount()); // Why not?
 }
 
+/**
+ * Manage each event.
+ * @todo Deal with COMPANY_ASK_MERGER depending on amount of money.
+ * @todo Switch round debug messages - display when event is unhandled - depends on GetEventName().
+ */
 function Manager::ManageEvents()
 {
 	local dealtWithEvent = null;
@@ -95,7 +104,7 @@ function Manager::ManageEvents()
 			case AIEvent.AI_ET_DISASTER_ZEPPELINER_CLEARED:
 				break;
 			/* These are unhandled (and will be handled in future) */
-			case AIEvent.AI_ET_COMPANY_ASK_MERGER: // TODO: Deal with it depending on amount of money
+			case AIEvent.AI_ET_COMPANY_ASK_MERGER:
 			default:
 				Util.Debug(1, 2, "Event is unhandled");
 				break;
@@ -106,6 +115,13 @@ function Manager::ManageEvents()
 	}
 }
 
+/**
+ * Get an event's name.
+ * No API function exists for this, so we must make our own.
+ * @param event The event to get the name of.
+ * @note This function is out of use for now - dependds on ManageEvent() debug messages being changed.
+ * @return The event name, in a string. If the event is unhandled, return false.
+ */
 function Manager::GetEventName(event) // OUT OF USE FOR NOW
 {// TODO: Switch round the debug: display when event is unhandled
 	/* No function to get the name of events, so:
@@ -136,4 +152,3 @@ function Manager::GetEventName(event) // OUT OF USE FOR NOW
 		default:					return "Unknown event name";
 	}
 }
-
