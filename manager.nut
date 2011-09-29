@@ -119,36 +119,34 @@ function Manager::ManageEvents()
  * Get an event's name.
  * No API function exists for this, so we must make our own.
  * @param event The event to get the name of.
- * @note This function is out of use for now - dependds on ManageEvent() debug messages being changed.
+ * @note This function is out of use for now - depends on ManageEvent() debug messages being changed.
  * @return The event name, in a string. If the event is unhandled, return false.
  */
-function Manager::GetEventName(event) // OUT OF USE FOR NOW
-{// TODO: Switch round the debug: display when event is unhandled
-	/* No function to get the name of events, so:
-	 * False return cases are silent ignores*/
+function Manager::GetEventName(event)
+{
 	switch (event) {
-		case AIEvent.AI_ET_INVALID:			return "AI_ET_INVALID";
-		case AIEvent.AI_ET_TEST:			return "AI_ET_TEST";
-		case AIEvent.AI_ET_SUBSIDY_OFFER:		return false;
-		case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:	return false;
-		case AIEvent.AI_ET_SUBSIDY_AWARDED:		return false;
-		case AIEvent.AI_ET_SUBSIDY_EXPIRED:		return false;
-		case AIEvent.AI_ET_ENGINE_PREVIEW:		return "AIEventEnginePreview";
-		case AIEvent.AI_ET_COMPANY_NEW:			return "AIEventCompanyNew";
-		case AIEvent.AI_ET_COMPANY_IN_TROUBLE:		return "AIEventCompanyInTrouble";
-		case AIEvent.AI_ET_COMPANY_ASK_MERGER:		return "AIEventCompanyAskMerger";
-		case AIEvent.AI_ET_COMPANY_MERGER:		return "AIEventCompanyMerger";
-		case AIEvent.AI_ET_COMPANY_BANKRUPT:		return "AIEventCompanyBankrupt";
-		case AIEvent.AI_ET_VEHICLE_CRASHED:		return "AIEventVehicleCrashed";
-		case AIEvent.AI_ET_VEHICLE_LOST:		return "AIEventVehicleLost";
-		case AIEvent.AI_ET_VEHICLE_WAITING_IN_DEPOT:	return "AIEventVehicleWaitingInDepot";
-		case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:	return false;
-		case AIEvent.AI_ET_INDUSTRY_OPEN:		return false;
-		case AIEvent.AI_ET_INDUSTRY_CLOSE:		return false;
-		case AIEvent.AI_ET_ENGINE_AVAILABLE:		return "AIEventEngineAvailable";
-		case AIEvent.AI_ET_STATION_FIRST_VEHICLE:	return false;
+		case AIEvent.AI_ET_INVALID:                     return "AI_ET_INVALID";
+		case AIEvent.AI_ET_TEST:                        return "AI_ET_TEST";
+		case AIEvent.AI_ET_SUBSIDY_OFFER:               return false;
+		case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:       return false;
+		case AIEvent.AI_ET_SUBSIDY_AWARDED:             return false;
+		case AIEvent.AI_ET_SUBSIDY_EXPIRED:             return false;
+		case AIEvent.AI_ET_ENGINE_PREVIEW:              return "AIEventEnginePreview";
+		case AIEvent.AI_ET_COMPANY_NEW:                 return "AIEventCompanyNew";
+		case AIEvent.AI_ET_COMPANY_IN_TROUBLE:          return "AIEventCompanyInTrouble";
+		case AIEvent.AI_ET_COMPANY_ASK_MERGER:          return "AIEventCompanyAskMerger";
+		case AIEvent.AI_ET_COMPANY_MERGER:              return "AIEventCompanyMerger";
+		case AIEvent.AI_ET_COMPANY_BANKRUPT:            return "AIEventCompanyBankrupt";
+		case AIEvent.AI_ET_VEHICLE_CRASHED:             return "AIEventVehicleCrashed";
+		case AIEvent.AI_ET_VEHICLE_LOST:                return "AIEventVehicleLost";
+		case AIEvent.AI_ET_VEHICLE_WAITING_IN_DEPOT:    return "AIEventVehicleWaitingInDepot";
+		case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:        return false;
+		case AIEvent.AI_ET_INDUSTRY_OPEN:               return false;
+		case AIEvent.AI_ET_INDUSTRY_CLOSE:              return false;
+		case AIEvent.AI_ET_ENGINE_AVAILABLE:            return "AIEventEngineAvailable";
+		case AIEvent.AI_ET_STATION_FIRST_VEHICLE:       return false;
 		case AIEvent.AI_ET_DISASTER_ZEPPELINER_CRASHED: return false;
 		case AIEvent.AI_ET_DISASTER_ZEPPELINER_CLEARED: return false;
-		default:					return "Unknown event name";
+		default:                                        return "Unknown event name";
 	}
 }
