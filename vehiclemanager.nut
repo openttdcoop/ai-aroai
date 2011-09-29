@@ -8,6 +8,8 @@
  * See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with OpenTTD. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file vehiclemanager.nut Manage company vehicles. */
+
 class VehicleManager
 {
 	/* Declare constants */
@@ -35,16 +37,24 @@ class VehicleManager
 	}
 }
 
+/**
+ * Build, order and start buses.
+ * @param depot_tile The tile index of the depot to build in.
+ * @param town_start The first town in bus orders.
+ * @param town_end The last town in bus orders.
+ * @return true if buses built successfully, else \c null.
+ * @todo Remove buses if ordering failed, for some reason.
+ */
 function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 {
 	local town_start_id = AITile.GetClosestTown(town_start);
 	Util.Debug(0, 3, "Buying buses in " + AITown.GetName(town_start_id));
 
 	local vehicle_id = AIVehicle.BuildVehicle(depot_tile, cargoTransportEngineIds[AIVehicle.VT_ROAD][passengerCargoID]);
-	if(!AIVehicle.IsValidVehicle(vehicle_id)) {
+	if (!AIVehicle.IsValidVehicle(vehicle_id)) {
 		local dwbve = VehicleManager.DealWithBuildVehicleErrors(AIError.GetLastError());
-		if(dwbve == 3) {
-			while(AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIEngine.GetPrice(cargoTransportEngineIds[AIVehicle.VT_ROAD][passengerCargoID])) {
+		if (dwbve == 3) {
+			while (AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIEngine.GetPrice(cargoTransportEngineIds[AIVehicle.VT_ROAD][passengerCargoID])) {
 				AIController.Sleep(Builder_BusRoute.SLEEP_TIME_MONEY);
 			}
 			vehicle_id = AIVehicle.BuildVehicle(depot_tile, cargoTransportEngineIds[AIVehicle.VT_ROAD][passengerCargoID]);
@@ -58,10 +68,10 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 	AIOrder.AppendOrder(vehicle_id, town_start, AIOrder.AIOF_NON_STOP_INTERMEDIATE);
 	AIOrder.AppendOrder(vehicle_id, town_end, AIOrder.AIOF_NON_STOP_INTERMEDIATE);
 	AIOrder.AppendOrder(vehicle_id, depot_tile, AIOrder.AIOF_SERVICE_IF_NEEDED);
+
 	/* If orders are not complete for some reason, give up */
-	if(AIOrder.GetOrderCount(vehicle_id) < 3) {
+	if (AIOrder.GetOrderCount(vehicle_id) < 3) {
 		Util.Debug(2, 3, "Ordering vehicles failed");
-		/* TODO: Get rid of failed vehicle(s) */
 		return null;
 	}
 	AIVehicle.StartStopVehicle(vehicle_id); // Start vehicle
@@ -84,10 +94,13 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 		c++; // Funny!
 	}
 	Util.Debug(0, 3, "Buses successfully bought");
-	/* TODO: Test return value without the return */
 	return true;
 }
 
+/**
+ * Get the CargoID of passengers, or something that can be transported by buses.
+ * Function originally taken from NoCAB.
+ */
 function VehicleManager::GetPassengerCargoID()
 {
 	/* Get passenger cargo ID */
@@ -101,6 +114,10 @@ function VehicleManager::GetPassengerCargoID()
 	}
 }
 
+/**
+ * Initalise all possible vehicles for 'selection'
+ * Add all vehicles to a list that get iterated through ProcessNewEngine().
+ */
 function VehicleManager::InitCargoTransportEngineIds()
 {
 	cargoTransportEngineIds = array(4);
@@ -124,6 +141,13 @@ function VehicleManager::InitCargoTransportEngineIds()
 		ProcessNewEngine(engine);
 }
 
+/**
+ * Process an engine/vehicle.
+ * Function originally taken from NoCAB.
+ * @param engineID The engine to check if the 'master list' needs to be replaced with it.
+ * @note Temportarily only checks road vehicles, while only those are supported.
+ * @return true if an engine has been replaced, else false.
+ */
 function VehicleManager::ProcessNewEngine(engineID)
 {
 	if (!AIEngine.IsBuildable(engineID)) return false;
@@ -208,6 +232,12 @@ function VehicleManager::ProcessNewEngine(engineID)
 	return engineReplaced;
 }
 
+/**
+ * Deal with errors while building vehicles.
+ * @param err The error to deal with.
+ * @return A number, depending on which error it is, else  \c null.
+ * @todo Re-merge with BuildBusEngines(),as this isn't really needed.
+ */
 function VehicleManager::DealWithBuildVehicleErrors(err)
 {
 	switch(err) {
@@ -233,4 +263,3 @@ function VehicleManager::DealWithBuildVehicleErrors(err)
 			break;
 	}
 }
-
