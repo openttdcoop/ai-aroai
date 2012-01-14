@@ -89,24 +89,22 @@ function Manager::ManageEvents()
 				Util.Debug(0, 2, vehname + " is lost");
 				Util.Debug(1, 2, "Event is unhandled");
 				break;
-			/* Silent ignore these
-			 * STATION_FIRST_VEHICLE will almost certainly never be handled
-			 * May deal with the others at some point */
-			case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:
+			/* Silent ignore these */
 			case AIEvent.AI_ET_STATION_FIRST_VEHICLE:
-			case AIEvent.AI_ET_INDUSTRY_OPEN:
-			case AIEvent.AI_ET_INDUSTRY_CLOSE:
-			case AIEvent.AI_ET_SUBSIDY_OFFER:
-			case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:
-			case AIEvent.AI_ET_SUBSIDY_AWARDED:
-			case AIEvent.AI_ET_SUBSIDY_EXPIRED:
 			case AIEvent.AI_ET_DISASTER_ZEPPELINER_CRASHED:
 			case AIEvent.AI_ET_DISASTER_ZEPPELINER_CLEARED:
+			case AIEvent.AI_ET_INDUSTRY_OPEN:
+			case AIEvent.AI_ET_INDUSTRY_CLOSE:
 				break;
 			/* These are unhandled (and will be handled in future) */
 			case AIEvent.AI_ET_COMPANY_ASK_MERGER:
+			case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:
+			case AIEvent.AI_ET_SUBSIDY_AWARDED:
+			case AIEvent.AI_ET_SUBSIDY_EXPIRED:
+			case AIEvent.AI_ET_SUBSIDY_OFFER:
+			case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:
 			default:
-				Util.Debug(1, 2, "Event is unhandled");
+				Util.Debug(1, 2, GetEventName(event.GetEventType()) + " is unhandled");
 				break;
 		}
 	}
@@ -119,7 +117,6 @@ function Manager::ManageEvents()
  * Get an event's name.
  * No API function exists for this, so we must make our own.
  * @param event The event to get the name of.
- * @note This function is out of use for now - depends on ManageEvent() debug messages being changed.
  * @return The event name, in a string. If the event is unhandled, return false.
  */
 function Manager::GetEventName(event)
@@ -127,10 +124,10 @@ function Manager::GetEventName(event)
 	switch (event) {
 		case AIEvent.AI_ET_INVALID:                     return "AI_ET_INVALID";
 		case AIEvent.AI_ET_TEST:                        return "AI_ET_TEST";
-		case AIEvent.AI_ET_SUBSIDY_OFFER:               return false;
-		case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:       return false;
-		case AIEvent.AI_ET_SUBSIDY_AWARDED:             return false;
-		case AIEvent.AI_ET_SUBSIDY_EXPIRED:             return false;
+		case AIEvent.AI_ET_SUBSIDY_OFFER:               return "AIEventSubsidyOffer";
+		case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:       return "AIEventSubsidyOfferExpired";
+		case AIEvent.AI_ET_SUBSIDY_AWARDED:             return "AIEventSubsidyAwarded";
+		case AIEvent.AI_ET_SUBSIDY_EXPIRED:             return "AIEventSubsidyExpired";
 		case AIEvent.AI_ET_ENGINE_PREVIEW:              return "AIEventEnginePreview";
 		case AIEvent.AI_ET_COMPANY_NEW:                 return "AIEventCompanyNew";
 		case AIEvent.AI_ET_COMPANY_IN_TROUBLE:          return "AIEventCompanyInTrouble";
@@ -140,7 +137,7 @@ function Manager::GetEventName(event)
 		case AIEvent.AI_ET_VEHICLE_CRASHED:             return "AIEventVehicleCrashed";
 		case AIEvent.AI_ET_VEHICLE_LOST:                return "AIEventVehicleLost";
 		case AIEvent.AI_ET_VEHICLE_WAITING_IN_DEPOT:    return "AIEventVehicleWaitingInDepot";
-		case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:        return false;
+		case AIEvent.AI_ET_VEHICLE_UNPROFITABLE:        return "AIEventVehicleUnprofitable";
 		case AIEvent.AI_ET_INDUSTRY_OPEN:               return false;
 		case AIEvent.AI_ET_INDUSTRY_CLOSE:              return false;
 		case AIEvent.AI_ET_ENGINE_AVAILABLE:            return "AIEventEngineAvailable";
