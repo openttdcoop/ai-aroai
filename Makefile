@@ -16,8 +16,9 @@ FILENAME       := AroAI
 
 shell          ?= /bin/bash
 HG             ?= hg
+AWK            ?= awk
 
-REPO_REVISION  := $(shell let tmp=`$(HG) id -n | cut -d+ -f1`+96; echo $$tmp)
+REPO_REVISION  := $(shell $(HG) id -n | cut -d+ -f1 | $(AWK) '{print $$(0)+96}')
 REPO_TAGS      ?= $(shell $(HG) id -t | grep -v "tip")
 REPO_LAST_TAG  ?= $(shell $(HG) tags | sed -e"1d;q" | cut -d" " -f1)
 REPO_USE_TAG   := $(shell [ -n "$(REPO_TAGS)" ] && echo $(REPO_TAGS) || echo $(REPO_LAST_TAG))
