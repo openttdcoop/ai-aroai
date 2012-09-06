@@ -18,39 +18,47 @@ class Util
 
 /**
  * Print a debug message to the AI debug window.
- * @param debug_level The specific debug function to use, e.g. Info or Error.
  * @param classname Which class anme to output with the debug statement, so you know where the debug has come from.
+ * @param debug_level The specific debug function to use, e.g. Info or Error.
  * @param string Specific string to print.
  * @param fullstop Should a fullstop be printed on the end? Default = true.
- * @todo Move classnamestr table to global scope.
  */
-function Util::Debug(debug_level, classname, string, fullstop = true)
+function Util::Debug(classname, debug_level, string, fullstop = true)
 {
 	local fullstopstr = ".";
 	if (fullstop = false) fullstopstr = "";
 
-	local classnamestr = [
-		"AroAI",
-		"Bus Route Builder",
-		"Manager",
-		"Vehicle Manager",
-		"END"
-		];
+	local classnamestr = "";
+	switch (classname) {
+		case "aroai":
+			classnamestr = "AroAI";
+			break;
+		case "busbuild":
+			classnamestr = "Bus Route Builder";
+			break;
+		case "globman":
+			classnamestr = "Global Manager";
+			break;
+		case "vehman":
+			classnamestr = "Vehicle Manager";
+			break;
+		default: AroAI.Stop();
+	}
 
 	switch (debug_level) {
 		case 0: // Info
-			AILog.Info(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
+			AILog.Info(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
 			break;
 		case 1: // Warning
-			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
+			AILog.Warning(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
 			break;
 		case 2: // Error
-			AILog.Error(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
+			AILog.Error(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
 			break;
 		case 3: // Debug
 		default:
-			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] " + string + fullstopstr);
-			AILog.Warning(GameDate() + " [" + classnamestr[classname] + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
+			AILog.Warning(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
+			AILog.Warning(GameDate() + " [" + classnamestr + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
 			break;
 	}
 

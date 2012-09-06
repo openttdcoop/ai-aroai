@@ -24,9 +24,9 @@ class Manager
 function Manager::ManageLoan()
 {
 	if (AICompany.GetLoanAmount() == LOAN_REDUCE_TO) return; // Loan already been reduced to 0
-	Util.Debug(0, 2, "Managing loan");
+	Util.Debug("globman", 0, "Managing loan");
 	if (AICompany.GetBankBalance(AICompany.COMPANY_SELF) >= MONEY_BEFORE_LOAN_REDUCE) {
-		Util.Debug(0, 2, "The company now has more than £" + MONEY_BEFORE_LOAN_REDUCE + ". Reducing Loan to minimum");
+		Util.Debug("globman", 0, "The company now has more than £" + MONEY_BEFORE_LOAN_REDUCE + ". Reducing Loan to minimum");
 		AICompany.SetLoanAmount(LOAN_REDUCE_TO);
 		return;
 	}
@@ -42,7 +42,7 @@ function Manager::ManageEvents()
 {
 	local dealtWithEvent = null;
 	if (AIEventController.IsEventWaiting()) {
-		Util.Debug(0, 2, "Managing events");
+		Util.Debug("globman", 0, "Managing events");
 	}
 	while (AIEventController.IsEventWaiting()) {
 		dealtWithEvent = true;
@@ -51,43 +51,43 @@ function Manager::ManageEvents()
 			case AIEvent.AI_ET_COMPANY_BANKRUPT:
 				local companyname = AICompany.GetName(AIEventCompanyBankrupt.Convert(event).GetCompanyID());
 				/* Can't always get company name because it's already gone */
-				if (!companyname) Util.Debug(0, 2, "A company has gone bankrupt. Better luck next time..");
-				else Util.Debug(0, 2, companyname + " has gone bankrupt. Better luck next time..");
+				if (!companyname) Util.Debug("globman", 0, "A company has gone bankrupt. Better luck next time..");
+				else Util.Debug("globman", 0, companyname + " has gone bankrupt. Better luck next time..");
 				break;
 			case AIEvent.AI_ET_COMPANY_IN_TROUBLE:
 				local companyname = AICompany.GetName(AIEventCompanyInTrouble.Convert(event).GetCompanyID());
-				Util.Debug(0, 2, companyname + " is in trouble and may go bankrupt soon");
+				Util.Debug("globman", 0, companyname + " is in trouble and may go bankrupt soon");
 				break;
 			case AIEvent.AI_ET_COMPANY_MERGER:
 				local oldcompanyname = AICompany.GetName(AIEventCompanyMerger.Convert(event).GetOldCompanyID());
 				local newcompanyname = AICompany.GetName(AIEventCompanyMerger.Convert(event).GetNewCompanyID());
-				Util.Debug(0, 2, oldcompanyname + " has been bought by " + newcompanyname);
+				Util.Debug("globman", 0, oldcompanyname + " has been bought by " + newcompanyname);
 				break;
 			case AIEvent.AI_ET_COMPANY_NEW:
 				local companyname = AICompany.GetName(AIEventCompanyNew.Convert(event).GetCompanyID());
-				Util.Debug(0, 2, companyname + " has just started");
+				Util.Debug("globman", 0, companyname + " has just started");
 				break;
 			case AIEvent.AI_ET_ENGINE_AVAILABLE:
 				local eng = AIEventEngineAvailable.Convert(event).GetEngineID();
 				local engname = AIEngine.GetName(eng);
-				Util.Debug(0, 2, "New engine available: " + engname);
+				Util.Debug("globman", 0, "New engine available: " + engname);
 				VehicleManager.ProcessNewEngine(eng);
 				break;
 			case AIEvent.AI_ET_ENGINE_PREVIEW:
 				AIEventEnginePreview.Convert(event).AcceptPreview();
-				Util.Debug(0, 2, "Accepted a preview of " + AIEventEnginePreview.Convert(event).GetName());
+				Util.Debug("globman", 0, "Accepted a preview of " + AIEventEnginePreview.Convert(event).GetName());
 				break;
 			case AIEvent.AI_ET_VEHICLE_CRASHED:
 				local veh = AIEventVehicleCrashed.Convert(event).GetVehicleID();
 				local vehname = AIVehicle.GetName(veh);
-				Util.Debug(1, 2, vehname + " has crashed");
-				Util.Debug(1, 2, "Event is unhandled");
+				Util.Debug("globman", 1, vehname + " has crashed");
+				Util.Debug("globman", 1, "Event is unhandled");
 				break;
 			case AIEvent.AI_ET_VEHICLE_LOST:
 				local veh = AIEventVehicleLost.Convert(event).GetVehicleID();
 				local vehname = AIVehicle.GetName(veh);
-				Util.Debug(0, 2, vehname + " is lost");
-				Util.Debug(1, 2, "Event is unhandled");
+				Util.Debug("globman", 0, vehname + " is lost");
+				Util.Debug("globman", 1, "Event is unhandled");
 				break;
 			/* Silent ignore these */
 			case AIEvent.AI_ET_STATION_FIRST_VEHICLE:
@@ -104,12 +104,12 @@ function Manager::ManageEvents()
 			case AIEvent.AI_ET_SUBSIDY_OFFER:
 			case AIEvent.AI_ET_SUBSIDY_OFFER_EXPIRED:
 			default:
-				Util.Debug(1, 2, GetEventName(event.GetEventType()) + " is unhandled");
+				Util.Debug("globman", 1, GetEventName(event.GetEventType()) + " is unhandled");
 				break;
 		}
 	}
 	if (dealtWithEvent) {
-		Util.Debug(0, 2, "No more events to manage");
+		Util.Debug("globman", 0, "No more events to manage");
 	}
 }
 

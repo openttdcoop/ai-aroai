@@ -64,7 +64,7 @@ function AroAI::Start()
 	/* Keep running. If Start() exits, the AI dies */
 	for(;;) {
 		this.Sleep(1);
-		Util.Debug(1, 0, "Main loop started");
+		Util.Debug("aroai", 1, "Main loop started");
 		Manager.ManageLoan();
 		Manager.ManageEvents();
 		if (!Builder_BusRoute.manageOnly) {
@@ -73,13 +73,13 @@ function AroAI::Start()
 			vehList.KeepValue(AIVehicle.VT_ROAD);
 			local maxVehs = vehList.Count();
 			if (AIGameSettings.GetValue("vehicle.max_roadveh") <=  maxVehs) {
-				Util.Debug(0, 0, "Max amount of road vehicles reached");
+				Util.Debug("aroai", 0, "Max amount of road vehicles reached");
 				Builder_BusRoute.manageOnly = true;
 			} else {
 				Builder_BusRoute.Main();
 			}
 		} else {
-			Util.Debug(0, 0, "Sleeping because there is nothing to build");
+			Util.Debug("aroai", 0, "Sleeping because there is nothing to build");
 			this.Sleep(MANAGE_ONLY_SLEEP_TIME);
 		}
 	}
@@ -88,10 +88,10 @@ function AroAI::Start()
 /** Stop the AI, by forcing it to crash. */
 function AroAI::Stop()
 {
-	Util.Debug(2, 0, "Something gone wrong. Clearing all signs");
+	Util.Debug("aroai", 2, "Something gone wrong. Clearing all signs");
 	Util.ClearAllSigns();
-	Util.Debug(2, 0, "Stopped");
-	Util.Debug(1, 0, "(The error is on purpose)", false);
+	Util.Debug("aroai", 2, "Stopped");
+	Util.Debug("aroai", 1, "(The error is on purpose)", false);
 	local crash = 1/0
 }
 
@@ -113,7 +113,7 @@ function AroAI::Save()
 function AroAI::Load(version, data)
 {
 	loaded = true;
-	Util.Debug(1, 0, "Loaded");
+	Util.Debug("aroai", 1, "Loaded");
 }
 
 /**
@@ -144,14 +144,14 @@ function AroAI::SetCompany()
 		];
 	local a = companynames[AIBase.RandRange(companynames.len() - 1)];
 	AICompany.SetName(a);
-	Util.Debug(0, 0, AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
+	Util.Debug("aroai", 0, AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
 
 	if(AICompany.GetPresidentGender(AICompany.COMPANY_SELF) == 0) {
 		AICompany.SetPresidentName("Lord Aro");
 	} else {
 		AICompany.SetPresidentName("Lady Aro");
 	}
-	Util.Debug(0, 0, AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
+	Util.Debug("aroai", 0, AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
 
 	AICompany.SetAutoRenewMonths(AUTO_RENEW_MONTHS);
 	AICompany.SetAutoRenewMoney(AUTO_RENEW_MONEY);
@@ -166,10 +166,10 @@ function AroAI::SetCompany()
  */
 function AroAI::GetVersionsAndStuff()
 {
-	Util.Debug(0, 0, "AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
-	Util.Debug(0, 0, "Special thanks to those who helped with the many problems had when making the AI");
+	Util.Debug("aroai", 0, "AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
+	Util.Debug("aroai", 0, "Special thanks to those who helped with the many problems had when making the AI");
 	local version = this.GetVersion();
-	Util.Debug(0, 0, "Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
+	Util.Debug("aroai", 0, "Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
 	    ((version & (15 << 24)) >> 24) + "." + ((version & (15 << 20)) >> 20) + "" +
 	    (((version & (1 << 19)) >> 19)?" stable release, ":" r") + ((version & ((1 << 18) - 1))));
 	AILog.Info("=======================================")
@@ -195,7 +195,7 @@ function AroAI::BuildHQ()
 		towns.Valuate(AITown.IsCity);
 		towns.KeepValue(1);
 		if (towns.Count == 0) {
-			Util.Debug(1, 0, "No possible HQ location found");
+			Util.Debug("aroai", 1, "No possible HQ location found");
 			return;
 		} else if (towns.Count == 1) {
 			HQtown = towns.Begin();
@@ -217,10 +217,10 @@ function AroAI::BuildHQ()
 	for (local tile = HQArea.Begin(); !HQArea.IsEnd(); tile = HQArea.Next()) {
 		if (AICompany.BuildCompanyHQ(tile)) {
 			AISign.BuildSign(tile, "AroAI HQ");
-			Util.Debug(0, 0, "HQ building completed");
+			Util.Debug("aroai", 0, "HQ building completed");
 			return;
 		}
 	}
-	Util.Debug(1, 0, "No possible HQ location found");
+	Util.Debug("aroai", 1, "No possible HQ location found");
 }
 

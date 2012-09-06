@@ -41,10 +41,10 @@ class Builder_BusRoute
  */
 function Builder_BusRoute::Main()
 {
-	Util.Debug(0, 1, "Planning on building bus route");
+	Util.Debug("busbuild", 0, "Planning on building bus route");
 	if ((AIGameSettings.IsDisabledVehicleType(AIVehicle.VT_ROAD)) || (AIController.GetSetting("enable_road_vehs") == 0)) {
-		Util.Debug(2, 1, "ROAD VEHICLES ARE DISABLED. THIS VERSION OF AROAI ONLY USES ROAD VEHICLES");
-		Util.Debug(2, 1, "PLEASE RE-ENABLE THEM, THEN RESTART GAME");
+		Util.Debug("busbuild", 2, "ROAD VEHICLES ARE DISABLED. THIS VERSION OF AROAI ONLY USES ROAD VEHICLES");
+		Util.Debug("busbuild", 2, "PLEASE RE-ENABLE THEM, THEN RESTART GAME");
 		AroAI.Stop();
 	}
 
@@ -130,7 +130,7 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 
 	/* Reset variable */
 	stopMoneyDebug = 10;
-	Util.Debug(0, 1, "Planning route from " + AITown.GetName(town_a) + " to " + AITown.GetName(town_b));
+	Util.Debug("busbuild", 0, "Planning route from " + AITown.GetName(town_a) + " to " + AITown.GetName(town_b));
 	local pathfinder = RoadPathFinder();
 	pathfinder.cost.turn = 1;
 	pathfinder.InitializePath([AITown.GetLocation(town_b)], [AITown.GetLocation(town_a)]);
@@ -144,11 +144,11 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 	}
 	/* No path was found */
 	if (path == null) {
-		Util.Debug(2, 1, "No route found");
+		Util.Debug("busbuild", 2, "No route found");
 		numToRemove++;
 		return null;
 	}
-	Util.Debug(0, 1, "Route found. (Tried " + counter + " times) Building started");
+	Util.Debug("busbuild", 0, "Route found. (Tried " + counter + " times) Building started");
 	/* If a path found, build a road over it */
 	while (path != null) {
 		local par = path.GetParent();
@@ -185,8 +185,8 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 					if (AITunnel.GetOtherTunnelEnd(path.GetTile()) == par.GetTile()) {
 						if (!AITunnel.BuildTunnel(AIVehicle.VT_ROAD, path.GetTile())) {
 							/* An error occured while building a tunnel. TODO: handle it. */
-							Util.Debug(2, 1, "Build tunnel error: " + AIError.GetLastErrorString());
-							Util.Debug(2, 1, "TODO: Handle it");
+							Util.Debug("busbuild", 2, "Build tunnel error: " + AIError.GetLastErrorString());
+							Util.Debug("busbuild", 2, "TODO: Handle it");
 							return null;
 						}
 					} else {
@@ -195,8 +195,8 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 						bridge_list.Sort(AIList.SORT_BY_VALUE, false);
 						if (!AIBridge.BuildBridge(AIVehicle.VT_ROAD, bridge_list.Begin(), path.GetTile(), par.GetTile())) {
 							/* An error occured while building a bridge. TODO: handle it. */
-							Util.Debug(2, 1, "Build bridge error: " + AIError.GetLastErrorString());
-							Util.Debug(2, 1, "TODO: Handle it");
+							Util.Debug("busbuild", 2, "Build bridge error: " + AIError.GetLastErrorString());
+							Util.Debug("busbuild", 2, "TODO: Handle it");
 							return null;
 						}
 					}
@@ -205,8 +205,8 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 		}
 		path = par;
 	}
-	Util.Debug(0, 1, "Road building finished");
-	Util.Debug(0, 1, AITown.GetName(town_a) + " is now connected to " + AITown.GetName(town_b))
+	Util.Debug("busbuild", 0, "Road building finished");
+	Util.Debug("busbuild", 0, AITown.GetName(town_a) + " is now connected to " + AITown.GetName(town_b))
 	return true;
 }
 
@@ -219,7 +219,7 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
  */
 function Builder_BusRoute::BuildBusStop(town)
 {
-	Util.Debug(0, 1, "Building bus stop in " + AITown.GetName(town));
+	Util.Debug("busbuild", 0, "Building bus stop in " + AITown.GetName(town));
 	/* Find empty square as close to town centre as possible */
 	local range = 1;
 	local max_range = Util.Sqrt(AITown.GetPopulation(town)/100) + 2;
@@ -244,7 +244,7 @@ function Builder_BusRoute::BuildBusStop(town)
 					if (!AIRoad.BuildDriveThroughRoadStation(station, opening, AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_JOIN_ADJACENT)) {
 						switch (AIError.GetLastError()) {
 							case AIError.ERR_NOT_ENOUGH_CASH:
-								Util.Debug(1, 1, "Not enough money to build bus stop. Waiting for more");
+								Util.Debug("busbuild", 1, "Not enough money to build bus stop. Waiting for more");
 								while (AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIRoad.GetBuildCost(AIRoad.ROADTYPE_ROAD, AIRoad.BT_BUS_STOP)) {
 									if (AIRoad.IsDriveThroughRoadStationTile(station)) continue;
 									AIController.Sleep(SLEEP_TIME_MONEY);
@@ -252,17 +252,17 @@ function Builder_BusRoute::BuildBusStop(town)
 								if (!AIRoad.BuildDriveThroughRoadStation(station, opening, AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_JOIN_ADJACENT)) return null; // TODO: handle errors again
 								break;
 							case AIRoad.ERR_ROAD_CANNOT_BUILD_ON_TOWN_ROAD:
-								Util.Debug(0, 1, "Building on town roads disabled. Building a bus station instead");
+								Util.Debug("busbuild", 0, "Building on town roads disabled. Building a bus station instead");
 								station = BuildRVStation(town, "station");
 								if (station == null) return null;
 								else return station;
 							case AIError.ERR_VEHICLE_IN_THE_WAY:
 							default:
-								Util.Debug(1, 1, "Unhandled error building bus stop: " + AIError.GetLastErrorString() + " Trying again");
+								Util.Debug("busbuild", 1, "Unhandled error building bus stop: " + AIError.GetLastErrorString() + " Trying again");
 								continue;
 						}
 					}
-					Util.Debug(0, 1, "Successfully built bus stop");
+					Util.Debug("busbuild", 0, "Successfully built bus stop");
 					townList.RemoveValue(town);
 					return station;
 				}
@@ -272,7 +272,7 @@ function Builder_BusRoute::BuildBusStop(town)
 			range++;
 		}
 	}
-	Util.Debug(2, 1, "Building bus stop in " + AITown.GetName(town) + " failed");
+	Util.Debug("busbuild", 2, "Building bus stop in " + AITown.GetName(town) + " failed");
 	return null;
 }
 
@@ -286,23 +286,23 @@ function Builder_BusRoute::BuildBusStop(town)
 function Builder_BusRoute::BuildRVStation(townid, type)
 {
 	local buildType = null;
-	Util.Debug(0, 1, "Building bus " + type + " in " + AITown.GetName(townid));
+	Util.Debug("busbuild", 0, "Building bus " + type + " in " + AITown.GetName(townid));
 	if (type == "station") {
 		buildType = AIRoad.BT_BUS_STOP;
 	}
 	else if (type == "depot") {
 		buildType = AIRoad.BT_DEPOT;
 		/* Check for depot in town. If yes, use that one */
-		Util.Debug(0, 1, "Checking for pre-built depots in " + AITown.GetName(townid));
+		Util.Debug("busbuild", 0, "Checking for pre-built depots in " + AITown.GetName(townid));
 		local depotList = AIDepotList(AITile.TRANSPORT_ROAD);
 		depotList.Valuate(AITile.GetClosestTown);
 		depotList.KeepValue(townid);
 		if (!depotList.IsEmpty()) {
-			Util.Debug(0, 1, "Depot in " + AITown.GetName(townid) + " found. Using it instead of building one");
+			Util.Debug("busbuild", 0, "Depot in " + AITown.GetName(townid) + " found. Using it instead of building one");
 			local depotTile = depotList.Begin();
 			return depotTile;
 		}
-		Util.Debug(0, 1, "No depot in " + AITown.GetName(townid) + " found");
+		Util.Debug("busbuild", 0, "No depot in " + AITown.GetName(townid) + " found");
 	}
 	/* Find empty square as close to station as possible */
 	local range = 1;
@@ -320,7 +320,7 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 					if (!AIRoad.BuildRoad(buildTile, buildFront)) {
 						switch (AIError.GetLastError()) {
 							case AIError.ERR_NOT_ENOUGH_CASH: // Wait for more money
-								Util.Debug(1, 1, "Not enough money to build road for bus " + type + ". Waiting for more");
+								Util.Debug("busbuild", 1, "Not enough money to build road for bus " + type + ". Waiting for more");
 								while (AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIRoad.GetBuildCost(AIRoad.ROADTYPE_ROAD, AIRoad.BT_ROAD)) {
 									if (!AITile.IsBuildable(buildTile)) continue;
 									AIController.Sleep(SLEEP_TIME_MONEY);
@@ -340,7 +340,7 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 							case AIRoad.ERR_ROAD_ONE_WAY_ROADS_CANNOT_HAVE_JUNCTIONS: // Can't happen? Just give up
 							case AIRoad.ERR_ROAD_WORKS_IN_PROGRESS: // Just give up
 							default:
-								Util.Debug(1, 1, "Unhandled error while building bus " + type + ": " + AIError.GetLastErrorString() + ". Trying again");
+								Util.Debug("busbuild", 1, "Unhandled error while building bus " + type + ": " + AIError.GetLastErrorString() + ". Trying again");
 								continue;
 						}
 					}
@@ -352,7 +352,7 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 					if (!buildStructure) {
 						switch (AIError.GetLastError()) {
 							case AIError.ERR_NOT_ENOUGH_CASH:
-								Util.Debug(1, 1, "Not enough money to build bus " + type + ". Waiting for more");
+								Util.Debug("busbuild", 1, "Not enough money to build bus " + type + ". Waiting for more");
 								while (AICompany.GetBankBalance(AICompany.COMPANY_SELF) < AIRoad.GetBuildCost(AIRoad.ROADTYPE_ROAD, buildType)) {
 									if (!AITile.IsBuildable(buildTile)) continue;
 									AIController.Sleep(SLEEP_TIME_MONEY);
@@ -363,11 +363,11 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 							case AIError.ERR_FLAT_LAND_REQUIRED:
 							case AIError.ERR_AREA_NOT_CLEAR: // TODO: Handle them, for now just give up and try somewhere else
 							default:
-								Util.Debug(1, 1, "Unhandled error while building bus " + type + ": " + AIError.GetLastErrorString() + ". Trying again");
+								Util.Debug("busbuild", 1, "Unhandled error while building bus " + type + ": " + AIError.GetLastErrorString() + ". Trying again");
 								continue;
 						}
 					}
-					Util.Debug(0, 1, "Successfully built bus " + type);
+					Util.Debug("busbuild", 0, "Successfully built bus " + type);
 					return buildTile;
 				}
 			}
@@ -378,7 +378,7 @@ function Builder_BusRoute::BuildRVStation(townid, type)
 			area.Clear;
 		}
 	}
-	Util.Debug(2, 1, "Building bus " + type + " in " + AITown.GetName(town) + " failed");
+	Util.Debug("busbuild", 2, "Building bus " + type + " in " + AITown.GetName(town) + " failed");
 	return null;
 }
 
@@ -416,15 +416,15 @@ function Builder_BusRoute::DealWithBuildRouteErrors(err)
 {
 	switch (err) {
 		case AIError.ERR_VEHICLE_IN_THE_WAY:
-			Util.Debug(1, 1, "Building road failed temporarily - vehicle in the way");
+			Util.Debug("busbuild", 1, "Building road failed temporarily - vehicle in the way");
 			return 4;
 		case AIError.ERR_ALREADY_BUILT: return 1; // Someone else already built this - silent ignore
 		case AIError.ERR_AREA_NOT_CLEAR:
-			Util.Debug(1, 1, "Building road failed: not clear, demolishing tile..");
+			Util.Debug("busbuild", 1, "Building road failed: not clear, demolishing tile..");
 			return 3;
 		case AIError.ERR_NOT_ENOUGH_CASH:
 			if (stopMoneyDebug == 10) { // Only display debug every ten times
-				Util.Debug(1, 1, "Not enough money to build road. Waiting for more");
+				Util.Debug("busbuild", 1, "Not enough money to build road. Waiting for more");
 				stopMoneyDebug = 0;
 			}
 			stopMoneyDebug++;
@@ -433,7 +433,7 @@ function Builder_BusRoute::DealWithBuildRouteErrors(err)
 		case AIRoad.ERR_ROAD_ONE_WAY_ROADS_CANNOT_HAVE_JUNCTIONS:
 		case AIRoad.ERR_ROAD_WORKS_IN_PROGRESS:
 		default:
-			Util.Debug(2, 1, "Unhandled error during road building " + AIError.GetLastErrorString());
+			Util.Debug("busbuild", 2, "Unhandled error during road building " + AIError.GetLastErrorString());
 			return null;
 	}
 }

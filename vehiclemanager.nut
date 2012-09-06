@@ -48,7 +48,7 @@ class VehicleManager
 function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 {
 	local town_start_id = AITile.GetClosestTown(town_start);
-	Util.Debug(0, 3, "Buying buses in " + AITown.GetName(town_start_id));
+	Util.Debug("vehman", 0, "Buying buses in " + AITown.GetName(town_start_id));
 
 	local vehicle_id = AIVehicle.BuildVehicle(depot_tile, cargoTransportEngineIds[AIVehicle.VT_ROAD][passengerCargoID]);
 	if (!AIVehicle.IsValidVehicle(vehicle_id)) {
@@ -59,11 +59,11 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 			}
 			vehicle_id = AIVehicle.BuildVehicle(depot_tile, cargoTransportEngineIds[AIVehicle.VT_ROAD][passengerCargoID]);
 		} else {
-			Util.Debug(2, 3, "Buying vehicles failed");
+			Util.Debug("vehman", 2, "Buying vehicles failed");
 			return null;
 		}
 	}
-	Util.Debug(0, 3, "1/" + NUM_VEHICLES_PER_ROUTE + " buses built");
+	Util.Debug("vehman", 0, "1/" + NUM_VEHICLES_PER_ROUTE + " buses built");
 	/* Give vehicle its orders */
 	AIOrder.AppendOrder(vehicle_id, town_start, AIOrder.AIOF_NON_STOP_INTERMEDIATE);
 	AIOrder.AppendOrder(vehicle_id, town_end, AIOrder.AIOF_NON_STOP_INTERMEDIATE);
@@ -71,7 +71,7 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 
 	/* If orders are not complete for some reason, give up */
 	if (AIOrder.GetOrderCount(vehicle_id) < 3) {
-		Util.Debug(2, 3, "Ordering vehicles failed");
+		Util.Debug("vehman", 2, "Ordering vehicles failed");
 		return null;
 	}
 	AIVehicle.StartStopVehicle(vehicle_id); // Start vehicle
@@ -90,10 +90,10 @@ function VehicleManager::BuildBusEngines(depot_tile, town_start, town_end)
 			}
 		}
 		AIVehicle.StartStopVehicle(vehicle_id); // Start cloned vehicle
-		Util.Debug(0, 3, c + "/" + NUM_VEHICLES_PER_ROUTE + " buses built");
+		Util.Debug("vehman", 0, c + "/" + NUM_VEHICLES_PER_ROUTE + " buses built");
 		c++; // Funny!
 	}
-	Util.Debug(0, 3, "Buses successfully bought");
+	Util.Debug("vehman", 0, "Buses successfully bought");
 	return true;
 }
 
@@ -182,8 +182,8 @@ function VehicleManager::ProcessNewEngine(engineID)
 					if (AIEngine.GetCapacity(cargoHoldingEngineIds[vehicleType][cargo]) < AIEngine.GetCapacity(engineID) ||
 					    AIRail.GetMaxSpeed(AIEngine.GetRailType(engineID)) > AIRail.GetMaxSpeed(AIEngine.GetRailType(cargoHoldingEngineIds[vehicleType][cargo]))) {
 						cargoHoldingEngineIds[vehicleType][cargo] = engineID;
-						if (oldEngineID == -1) Util.Debug(0, 3, "Using " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
-						else Util.Debug(0, 3, "Replaced " + AIEngine.GetName(oldEngineID) + " with " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
+						if (oldEngineID == -1) Util.Debug("vehman", 0, "Using " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
+						else Util.Debug("vehman", 0, "Replaced " + AIEngine.GetName(oldEngineID) + " with " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
 						newEngineID = engineID;
 						engineReplaced = true;
 					}
@@ -192,8 +192,8 @@ function VehicleManager::ProcessNewEngine(engineID)
 					if (AIEngine.GetMaxSpeed(cargoTransportEngineIds[vehicleType][cargo]) < AIEngine.GetMaxSpeed(engineID) ||
 					    AIRail.GetMaxSpeed(AIEngine.GetRailType(engineID)) > AIRail.GetMaxSpeed(AIEngine.GetRailType(cargoTransportEngineIds[vehicleType][cargo]))) {
 						cargoTransportEngineIds[vehicleType][cargo] = engineID;
-						if (oldEngineID == -1) Util.Debug(0, 3, "Using " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
-						else Util.Debug(0, 3, "Replaced " + AIEngine.GetName(oldEngineID) + " with " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
+						if (oldEngineID == -1) Util.Debug("vehman", 0, "Using " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
+						else Util.Debug("vehman", 0, "Replaced " + AIEngine.GetName(oldEngineID) + " with " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
 						newEngineID = engineID;
 						engineReplaced = true;
 						updateWagons = true;
@@ -203,8 +203,8 @@ function VehicleManager::ProcessNewEngine(engineID)
 				cargoTransportEngineIds[vehicleType][cargo] = engineID;
 				cargoHoldingEngineIds[vehicleType][cargo] = engineID;
 				newEngineID = engineID;
-				if (oldEngineID == -1) Util.Debug(0, 3, "Using " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
-				else Util.Debug(0, 3, "Replaced " + AIEngine.GetName(oldEngineID) + " with " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
+				if (oldEngineID == -1) Util.Debug("vehman", 0, "Using " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
+				else Util.Debug("vehman", 0, "Replaced " + AIEngine.GetName(oldEngineID) + " with " + AIEngine.GetName(engineID) + " to transport " + AICargo.GetCargoLabel(cargo));
 				engineReplaced = true;
 			}
 		}
@@ -236,30 +236,29 @@ function VehicleManager::ProcessNewEngine(engineID)
  * Deal with errors while building vehicles.
  * @param err The error to deal with.
  * @return A number, depending on which error it is, else  \c null.
- * @todo Re-merge with BuildBusEngines(),as this isn't really needed.
  */
 function VehicleManager::DealWithBuildVehicleErrors(err)
 {
 	switch(err) {
 		case AIError.ERR_NOT_ENOUGH_CASH:
-			Util.Debug(1, 3, "Not enough money to buy buses. Waiting for more");
+			Util.Debug("vehman", 1, "Not enough money to buy buses. Waiting for more");
 			return 3;
 		case AIVehicle.ERR_VEHICLE_TOO_MANY:
 			/* Gets dealt with in Start() */
-			Util.Debug(2, 3, "Too many vehicles");
+			Util.Debug("vehman", 2, "Too many vehicles");
 			return null;
 		case AIVehicle.ERR_VEHICLE_BUILD_DISABLED:
 			/* Shouldn't happen, but still... */
-			Util.Debug(2, 3, "ROADS VEHICLE TYPE IS DISABLED. THIS VERSION OF AROAI ONLY USES ROAD VEHICLES");
-			Util.Debug(2, 3, "PLEASE RE-ENABLE THEM, THEN RESTART GAME");
+			Util.Debug("vehman", 2, "ROADS VEHICLE TYPE IS DISABLED. THIS VERSION OF AROAI ONLY USES ROAD VEHICLES");
+			Util.Debug("vehman", 2, "PLEASE RE-ENABLE THEM, THEN RESTART GAME");
 			AroAI.Stop();
 			break;
 		case AIError.ERR_PRECONDITION_FAILED:
-			Util.Debug(1, 3, "Error: ERR_PRECONDITION_FAILED");
+			Util.Debug("vehman", 1, "Error: ERR_PRECONDITION_FAILED");
 			return 5;
 		case AIVehicle.ERR_VEHICLE_WRONG_DEPOT:
 		default:
-			Util.Debug(1, 3, "Unhandled error during vehicle buying: " + AIError.GetLastErrorString());
+			Util.Debug("vehman", 1, "Unhandled error during vehicle buying: " + AIError.GetLastErrorString());
 			break;
 	}
 }
