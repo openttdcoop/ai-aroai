@@ -135,11 +135,9 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 	pathfinder.cost.turn = 1;
 	pathfinder.InitializePath([AITown.GetLocation(town_b)], [AITown.GetLocation(town_a)]);
 	local path = false;
-	local counter = 0;
-	while (path == false) {
+	for (local i = 0; i < 500 && path == false i++) {
 		/* Number of attempts at finding path */
 		path = pathfinder.FindPath(PATHFINDER_ITERATIONS);
-		counter++;
 		AIController.Sleep(1);
 	}
 	/* No path was found */
