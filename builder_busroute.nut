@@ -89,7 +89,7 @@ function Builder_BusRoute::GetTowns()
 	townList.RemoveTop(numToRemove);
 	town_a = townList.Begin();
 	if (townList.IsEnd()) {
-		Util.Debug(1, 1, "No towns left to build in. Now managing only");
+		Util.Debug("busbuild", 1, "No towns left to build in. Now managing only");
 		manageOnly = true;
 		return null;
 	}
@@ -104,7 +104,7 @@ function Builder_BusRoute::GetTowns()
 	townList.Valuate(AITown.GetRating, AICompany.COMPANY_SELF);
 	townList.KeepValue(AITown.TOWN_RATING_NONE);
 	if (townList.IsEmpty()) {
-		Util.Debug(1, 1, "No serviceable towns within radius of " + AITown.GetName(town_a) + ". Moving to next town");
+		Util.Debug("busbuild", 1, "No serviceable towns within radius of " + AITown.GetName(town_a) + ". Moving to next town");
 		numToRemove++;
 		return null;
 	}
