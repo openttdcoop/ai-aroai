@@ -59,6 +59,8 @@ bundle_tar: bundle
 	$(_E) "[TAR]"
 	$(_V) tar -cf $(TAR_FILENAME) $(BUNDLE_NAME)
 	$(_V) rm -rf $(BUNDLE_NAME)
+	$(_V) rm -f readme.txt
+	$(_V) rm -f changelog.txt
 
 clean:
 	$(_E) "[CLEAN]"
