@@ -52,15 +52,13 @@ function Builder_BusRoute::Main()
 
 	if (BuildRoad(town_a, town_b) == null) return;
 
-	local town = town_a;
-	local busStation_a = BuildBusStop(town);
+	local busStation_a = BuildBusStop(town_a);
 	if (busStation_a == null) return;
 
 	local depot_tile_a = BuildRVStation(town_a, "depot");
 	if (depot_tile_a == null) return;
 
-	town = town_b;
-	local busStation_b = BuildBusStop(town);
+	local busStation_b = BuildBusStop(town_b);
 	if (busStation_b == null) return;
 
 	local depot_tile_b = BuildRVStation(town_b, "depot");
