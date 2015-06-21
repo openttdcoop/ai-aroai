@@ -64,7 +64,7 @@ function AroAI::Start()
 	/* Keep running. If Start() exits, the AI dies */
 	for(;;) {
 		this.Sleep(1);
-		Util.Debug("aroai", Util.DEBUG_WARN, "Main loop started");
+		Util.Debug(Util.CLS_AROAI, Util.DEBUG_WARN, "Main loop started");
 		Manager.ManageLoan();
 		Manager.ManageEvents();
 		if (!Builder_BusRoute.manageOnly) {
@@ -73,13 +73,13 @@ function AroAI::Start()
 			vehList.KeepValue(AIVehicle.VT_ROAD);
 			local maxVehs = vehList.Count();
 			if (AIGameSettings.GetValue("vehicle.max_roadveh") <=  maxVehs) {
-				Util.Debug("aroai", Util.DEBUG_INFO, "Max amount of road vehicles reached");
+				Util.Debug(Util.CLS_AROAI, Util.DEBUG_INFO, "Max amount of road vehicles reached");
 				Builder_BusRoute.manageOnly = true;
 			} else {
 				Builder_BusRoute.Main();
 			}
 		} else {
-			Util.Debug("aroai", Util.DEBUG_INFO, "Sleeping because there is nothing to build");
+			Util.Debug(Util.CLS_AROAI, Util.DEBUG_INFO, "Sleeping because there is nothing to build");
 			this.Sleep(MANAGE_ONLY_SLEEP_TIME);
 		}
 	}
@@ -88,10 +88,10 @@ function AroAI::Start()
 /** Stop the AI, by forcing it to crash. */
 function AroAI::Stop()
 {
-	Util.Debug("aroai", Util.DEBUG_ERR, "Something gone wrong. Clearing all signs");
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_ERR, "Something gone wrong. Clearing all signs");
 	Util.ClearAllSigns();
-	Util.Debug("aroai", Util.DEBUG_ERR, "Stopped");
-	Util.Debug("aroai", Util.DEBUG_WARN, "(The error is on purpose)", false);
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_ERR, "Stopped");
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_WARN, "(The error is on purpose)", false);
 	local crash = 1/0
 }
 
@@ -113,7 +113,7 @@ function AroAI::Save()
 function AroAI::Load(version, data)
 {
 	loaded = true;
-	Util.Debug("aroai", Util.DEBUG_WARN, "Loaded");
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_WARN, "Loaded");
 }
 
 /**
@@ -144,14 +144,14 @@ function AroAI::SetCompany()
 		];
 	local a = companynames[AIBase.RandRange(companynames.len() - 1)];
 	AICompany.SetName(a);
-	Util.Debug("aroai", Util.DEBUG_INFO, AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_INFO, AICompany.GetName(AICompany.COMPANY_SELF) + " inaugurated");
 
 	if(AICompany.GetPresidentGender(AICompany.COMPANY_SELF) == 0) {
 		AICompany.SetPresidentName("Lord Aro");
 	} else {
 		AICompany.SetPresidentName("Lady Aro");
 	}
-	Util.Debug("aroai", Util.DEBUG_INFO, AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_INFO, AICompany.GetPresidentName(AICompany.COMPANY_SELF) + " is the new president");
 
 	AICompany.SetAutoRenewMonths(AUTO_RENEW_MONTHS);
 	AICompany.SetAutoRenewMoney(AUTO_RENEW_MONEY);
@@ -166,10 +166,10 @@ function AroAI::SetCompany()
  */
 function AroAI::GetVersionsAndStuff()
 {
-	Util.Debug("aroai", Util.DEBUG_INFO, "AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
-	Util.Debug("aroai", Util.DEBUG_INFO, "Special thanks to those who helped with the many problems had when making the AI");
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_INFO, "AroAI v" + AI_VERSION + " by Charles Pigott (Lord Aro) started");
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_INFO, "Special thanks to those who helped with the many problems had when making the AI");
 	local version = this.GetVersion();
-	Util.Debug("aroai", Util.DEBUG_INFO, "Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_INFO, "Currently playing on OpenTTD version " + ((version & (15 << 28)) >> 28) + "." +
 	    ((version & (15 << 24)) >> 24) + "." + ((version & (15 << 20)) >> 20) + "" +
 	    (((version & (1 << 19)) >> 19)?" stable release, ":" r") + ((version & ((1 << 18) - 1))));
 	AILog.Info("=======================================")
@@ -195,7 +195,7 @@ function AroAI::BuildHQ()
 		towns.Valuate(AITown.IsCity);
 		towns.KeepValue(1);
 		if (towns.Count == 0) {
-			Util.Debug("aroai", Util.DEBUG_WARN, "No possible HQ location found");
+			Util.Debug(Util.CLS_AROAI, Util.DEBUG_WARN, "No possible HQ location found");
 			return;
 		} else if (towns.Count == 1) {
 			HQtown = towns.Begin();
@@ -217,9 +217,9 @@ function AroAI::BuildHQ()
 	for (local tile = HQArea.Begin(); !HQArea.IsEnd(); tile = HQArea.Next()) {
 		if (AICompany.BuildCompanyHQ(tile)) {
 			AISign.BuildSign(tile, "AroAI HQ");
-			Util.Debug("aroai", Util.DEBUG_INFO, "HQ building completed");
+			Util.Debug(Util.CLS_AROAI, Util.DEBUG_INFO, "HQ building completed");
 			return;
 		}
 	}
-	Util.Debug("aroai", Util.DEBUG_WARN, "No possible HQ location found");
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_WARN, "No possible HQ location found");
 }
