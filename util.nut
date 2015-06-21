@@ -14,12 +14,18 @@ class Util
 {
 	/* Declare constants */
 	DATE_2_DIGITS = 10; ///< Make sure the date always has 2 digits
+
+	/* Lol enums */
+	DEBUG_INFO  = 0;
+	DEBUG_WARN  = 1;
+	DEBUG_ERR   = 2;
+	DEBUG_DEBUG = 3;
 }
 
 /**
  * Print a debug message to the AI debug window.
  * @param classname Which class anme to output with the debug statement, so you know where the debug has come from.
- * @param debug_level The specific debug function to use, e.g. Info or Error.
+ * @param debug_level The specific debug function to use, e.g. Info or Error. See DebugLvl
  * @param string Specific string to print.
  * @param fullstop Should a fullstop be printed on the end? Default = true.
  */
@@ -45,21 +51,12 @@ function Util::Debug(classname, debug_level, string, fullstop = true)
 		default: AroAI.Stop();
 	}
 
-	switch (debug_level) {
-		case 0: // Info
-			AILog.Info(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
-			break;
-		case 1: // Warning
-			AILog.Warning(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
-			break;
-		case 2: // Error
-			AILog.Error(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
-			break;
-		case 3: // Debug
-		default:
-			AILog.Warning(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
-			AILog.Warning(GameDate() + " [" + classnamestr + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
-			break;
+	// Mapping from Debug levels to AILog funcs
+	local logFuncMap = [AILog.Info, AILog.Warning, AILog.Error, AILog.Warning];
+	local logFunc = logFuncMap[debug_level];
+	logFunc(GameDate() + " [" + classnamestr + "] " + string + fullstopstr);
+	if (debug_level == Util.DEBUG_DEBUG) {
+		AILog.Warning(GameDate() + " [" + classnamestr + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
 	}
 
 }
