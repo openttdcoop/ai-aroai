@@ -140,7 +140,7 @@ function Builder_BusRoute::BuildRoad(town_a, town_b)
 		AIController.Sleep(1);
 	}
 	/* No path was found */
-	if (path == null) {
+	if (!path) {
 		Util.Debug(Util.CLS_BUS_BUILDER, Util.DEBUG_ERR, "No route found");
 		numToRemove++;
 		return null;
