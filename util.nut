@@ -12,9 +12,6 @@
 
 class Util
 {
-	/* Declare constants */
-	DATE_2_DIGITS = 10; ///< Make sure the date always has 2 digits
-
 	/* Lol enums */
 	DEBUG_INFO  = 0;
 	DEBUG_WARN  = 1;
@@ -42,9 +39,9 @@ function Util::Debug(classname, debug_level, string)
 	// Mapping from Debug levels to AILog funcs
 	local logFuncMap = [AILog.Info, AILog.Warning, AILog.Error, AILog.Warning];
 	local logFunc = logFuncMap[debug_level];
-	logFunc(GameDate() + " [" + classStr + "] " + string);
+	logFunc(Util.GameDate() + " [" + classStr + "] " + string);
 	if (debug_level == Util.DEBUG_DEBUG) {
-		AILog.Warning(GameDate() + " [" + classStr + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
+		AILog.Warning(Util.GameDate() + " [" + classStr + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
 	}
 }
 
@@ -56,11 +53,11 @@ function Util::GameDate()
 	local date = AIDate.GetCurrentDate();
 	local year = AIDate.GetYear(date);
 	local month = AIDate.GetMonth(date);
-	if(month < DATE_2_DIGITS) {
+	if (month < 10) {
 		month = "0" + month;
 	}
 	local day = AIDate.GetDayOfMonth(date);
-	if(day < DATE_2_DIGITS) {
+	if (day < 10) {
 		day = "0" + day;
 	}
 	return day + "/" + month + "/" + year;

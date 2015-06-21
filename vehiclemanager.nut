@@ -30,8 +30,7 @@ class VehicleManager
 		cargo_list.Sort(AIList.SORT_BY_VALUE, false);
 
 		/* Temporary while only passengers are supported */
-		GetPassengerCargoID();
-		cargo_list.KeepValue(passengerCargoID);
+		passengerCargoID = GetPassengerCargoID();
 
 		maxCargoID = cargo_list.Begin();
 	}
@@ -108,10 +107,11 @@ function VehicleManager::GetPassengerCargoID()
 	for (local i = list.Begin(); !list.IsEnd(); i = list.Next()) {
 		if (AICargo.HasCargoClass(i, AICargo.CC_PASSENGERS) &&
 		    AICargo.GetTownEffect(i) == AICargo.TE_PASSENGERS) {
-			passengerCargoID = i;
-			break;
+			return i;
 		}
 	}
+	Util.Debug(Util.CLS_VEH_MANAGER, Util.DEBUG_ERR, "Could not find passenger cargo ID");
+	AroAI.Stop();
 }
 
 /**
