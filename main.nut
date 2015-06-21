@@ -91,7 +91,7 @@ function AroAI::Stop()
 	Util.Debug(Util.CLS_AROAI, Util.DEBUG_ERR, "Something gone wrong. Clearing all signs");
 	Util.ClearAllSigns();
 	Util.Debug(Util.CLS_AROAI, Util.DEBUG_ERR, "Stopped");
-	Util.Debug(Util.CLS_AROAI, Util.DEBUG_WARN, "(The error is on purpose)", false);
+	Util.Debug(Util.CLS_AROAI, Util.DEBUG_WARN, "(The error is on purpose)");
 	local crash = 1/0
 }
 

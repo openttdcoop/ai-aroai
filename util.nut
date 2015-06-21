@@ -34,18 +34,15 @@ class Util
  * @param string Specific string to print.
  * @param fullstop Should a fullstop be printed on the end? Default = true.
  */
-function Util::Debug(classname, debug_level, string, fullstop = true)
+function Util::Debug(classname, debug_level, string)
 {
-	local fullstopstr = ".";
-	if (fullstop = false) fullstopstr = "";
-
 	local classMap = ["AroAI", "Bus Route Builder", "Global Manager", "Vehicle Manager"];
 	local classStr = classMap[classname];
 
 	// Mapping from Debug levels to AILog funcs
 	local logFuncMap = [AILog.Info, AILog.Warning, AILog.Error, AILog.Warning];
 	local logFunc = logFuncMap[debug_level];
-	logFunc(GameDate() + " [" + classStr + "] " + string + fullstopstr);
+	logFunc(GameDate() + " [" + classStr + "] " + string);
 	if (debug_level == Util.DEBUG_DEBUG) {
 		AILog.Warning(GameDate() + " [" + classStr + "] (If you see this, please inform an AI dev, as it was supposed to be removed before release)");
 	}
